@@ -1,0 +1,19 @@
+	# Mac OS X
+.DS_Store
+
+# IDE
+.idea
+*.out
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# lib & package
+.glide/

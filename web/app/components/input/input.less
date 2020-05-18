@@ -1,0 +1,29 @@
+.d-input-container {
+	box-sizing: border-box;
+	min-height: 32px;
+	padding: 4px 11px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	line-height: 1;
+	position: relative;
+	.d-input-placeholder {
+		position: absolute;
+		width: calc(100% - 22px);
+		left: 11px;
+		height: 22px;
+		line-height: 1.5;
+		color: #ccc;
+	}
+	ul {
+		overflow: hidden;
+		li {
+			float: left;
+		}
+	}
+	input {
+		border: none;
+		outline: none;
+		height: 24px;
+		width: 0;
+	}
+}

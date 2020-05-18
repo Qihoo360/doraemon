@@ -1,0 +1,55 @@
+[English](https://git.qihoo.cloud/sre/doraemon/blob/master/README.md) | [中文](https://git.qihoo.cloud/sre/doraemon/blob/master/README-CN.md)  
+# Doraemon  
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://git.qihoo.cloud/sre/doraemon/blob/master/LICENSE)
+
+Doraemon是一个基于 **[Prometheus](https://prometheus.io)** 的监控系统。该系统主要由三个组件组成——计算引擎（Rule Engine），报警网关（Alert Gateway）以及Web-UI。与Prometheus使用静态的配置文件来配置报警规则不同，Doraemon可以通过Web-UI动态的配置加载报警规则。此外，Doraemon还集成了许多自定义的报警功能。
+
+## 特性
+- 用户可以通过Web-UI动态配置报警规则。
+- 支持灵活的报警策略，比如报警延迟（可以实现报警升级），创建报警接收组以及值班组。用户还能通过HOOK的方式来发送报警，由用户自己来决定如何处理报警。
+- 用户可以通过prometheus的标签来实现批量确认报警。
+- 支持创建维护组。维护组中的机器在维护时间段内产生的报警将不会发送给用户。
+- 为了减少报警发送数量，所有报警都在报警规则的维度做了报警聚合（根据该报警规则对应的报警策略每个周期聚合一次并发送）。报警恢复信息也从报警规则的维度每分钟聚合发送一次。
+- 支持多种登录方式：企业版支持LDAP/OAuth 2.0/本地登录。
+
+## 架构
+整个系统采用前后端分离的开发方案，前端使用React开发，后端使用 **[Beego](https://beego.me)** 框架开发，并使用MySQL存储数据。
+  
+![Architecture](docs/images/Architecture.png)  
+
+## 组件
+- Rule Engine: 从Alert Gateway动态拉取报警规则，并下发到多个prometheus server进行计算，与此同时接收从prometheus server发来的报警并转发给Alert Gateway。
+- Alert Gateway: 接收从Rule Engine发送的报警，并根据报警策略聚合发送报警信息。
+- Web UI: 用于运维人员添加报警规则，创建报警策略、维护组，进行报警确认或者查看历史报警。
+
+## 依赖
+
+- Golang 1.12+ ([installation manual](https://golang.org/dl/))
+- Docker 17.05+ ([installation manual](https://docs.docker.com/install))
+- Bee ([installation manual](https://github.com/beego/bee))
+- Node.js v10.16+ and npm 6.10+ ([installation with nvm](https://github.com/creationix/nvm#usage))
+- MySQL 5.6+ (Most of the data is in MySQL.)
+
+## 快速启动
+
+- 克隆代码仓库
+
+```bash
+$ go get 
+```
+- 修改配置文件  
+
+- 启动服务
+
+在Doraemon的根目录下，通过 docker-compose 创建服务
+
+```bash
+$ cd deployments/docker-compose/
+$ docker-compose up -d
+```
+
+通过上述命令，您可以从通过 http://127.0.0.1:32000 访问本地Doraemon。
+
+## 文档  
+**[Wiki](https://Qihoo360.github.io/doraemon/readme-CN)**  

@@ -1,0 +1,300 @@
+@import "./theme.less";
+
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button,article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
+    margin:0;
+    padding:0;
+}
+html,body { background-color: transparent; font-family: @font-family;font-size: @font-size-base; color: @text-color; overflow: hidden; -webkit-font-smoothing: antialiased !important;}
+table{ border-spacing: 0; border-collapse: collapse;table-layout: fixed}
+textarea{ padding: @space-sm;}
+table tr td ,table tr th{ text-align: center; padding: @space-base; line-height: normal; }
+table tr td .ant-select{ width: 100%; }
+table tr td a{ padding: 0 @space-sm; }
+h1, .h1 { font-size: @font-size-hg; }
+h2, .h2 { font-size: @font-size-hg; }
+h3, .h3 { font-size: @font-size-lg; }
+h4, .h4 { font-size: @font-size-lg; color:@text-color-bold    }
+h5, .h5 { font-size: @font-size-base; }
+h1, h2, h3, h4, h5, .h1, .h2, .h3, .h4, .h5 {font-weight: 600;}
+::selection {background-color: rgba(46, 165, 204, 0.41);color: inherit !important;}
+.left, .fl{ float:left; text-align: left;}
+.right, .fr{ float: right;}
+.hide, .hide.ant-btn{display: none !important;}
+.red, .error{color: @error-color !important;}
+.info{color: @info-color !important;}
+.gray{color: @gray !important}
+.yellow{color: @warning-color !important;}
+.green, .success{color:@success-color !important;}
+.orange{color: @orange !important;}
+.highlight, .blue{color: @blue !important;}
+.fail{color: @text-color-secondary !important;}
+.transparent{ color: transparent;}
+a{ color: @primary-color;
+  &:focus{text-decoration: none;}
+}
+ul li,dl dt{list-style: none}
+
+.text-left{ text-align: left !important; }
+.text-right{ text-align: right !important; }
+.input-base-width{width: 240px !important;} // 基本搜索框的宽度
+.fullWidth{ width: 100% !important;} // 占满宽度
+.center{ text-align: center !important;} // 文本居中
+.pointer{cursor: pointer !important;}// 手形
+.move{cursor: move !important;}// 拖拽
+// margin的设置
+.mrbase{ margin-right: @space-base !important;}
+.mtbase{ margin-top: @space-base !important;}
+.mbbase{ margin-bottom: @space-base !important;}
+.mlbase{ margin-left: @space-base !important;}
+.mrbig{ margin-right: @space-big !important;}
+.mtbig{ margin-top: @space-big !important;}
+.mbbig{ margin-bottom: @space-big !important;}
+.mlbig{ margin-left: @space-big !important;}
+.mrlg{ margin-right: @space-lg !important;}
+.mtlg{ margin-top: @space-lg !important;}
+.mblg{ margin-bottom: @space-lg !important;}
+.mllg{ margin-left: @space-lg !important;}
+// padding 的通用设置
+.prbase{ padding-right: @space-base !important;}
+.ptbase{ padding-top: @space-base !important;}
+.pbbase{ padding-bottom: @space-base !important;}
+.plbase{ padding-left: @space-base !important;}
+.prbig{ padding-right: @space-big !important;}
+.ptbig{ padding-top: @space-big !important;}
+.pbbig{ padding-bottom: @space-big !important;}
+.plbig{ padding-left: @space-big !important;}
+.prlg{ padding-right: @space-lg !important;}
+.ptlg{ padding-top: @space-lg !important;}
+.pblg{ padding-bottom: @space-lg !important;}
+.pllg{ padding-left: @space-lg !important;}
+.table-content{margin-top: 0;
+  &.clear-overlap-border .ant-table-body .ant-table-fixed{margin-top: -1px;}
+  .ant-table-body{ flex: 1;}
+  .ant-pagination{ margin-top: @space-big; display: flex; justify-content: flex-end; min-height: 28px; }
+}
+.total{ font-size: 16px; color: @primary-color;} // 总计
+.modalMaxHeight{ max-height: 400px; overflow-y: auto; overflow-x: hidden; min-height: 100px;} // 基本弹窗的最大高度自适应
+.flexcolumn{display: flex; flex:1; flex-direction: column;}
+.flexrow{ display: flex; flex:1; flex-direction: row;}
+.flexAuto{display: flex;flex:1} // 与theme.less中的flexAuto冲突
+.regularFlex{display: flex;flex: 0 0 auto;}
+.nodata{text-align: center; color: @text-color-secondary; padding-top:@space-big;} // 暂无数据的样式
+.ellipsis{display: block;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;flex:1 1 auto !important;}// 文本过长时省略
+.page-scrollfix{
+  .page-header{ padding-right: @space-big + @scroll-width/2;}
+  .page-content{ padding-right: @space-big + @scroll-width/2;}
+  .page-footer{ padding-right: @space-big + @scroll-width/2;}
+  .table-scrollfix{ margin-right: -@scroll-width;}
+  .ant-modal-content{
+    .ant-pagination{ margin-right: @space-big/2;}
+  }
+}
+// 全局基础样式、reset等,有可能和antd同级，所以要放在body里面提升优先级
+body{
+  .ant-modal-header{ background-color: #f7f9fc;
+    .ant-modal-title{ color: @text-color; }
+  }
+  .ant-modal-centered .ant-modal{ top: -60px;}
+  .ant-form-item-label label{ color: #666;}
+  // 去除number型输入框的上下箭头
+  input[type=number]{
+    &::-webkit-outer-spin-button,&::-webkit-inner-spin-button{-webkit-appearance: none;margin: 0;}
+  }
+  .popover-dark{ // tip浮层的样式主体化
+     min-width: 130px; 
+    .title{ color: #AFB4BA;}
+    .ant-popover-inner{ background-color: #485465; padding-left: @space-big;border-radius: 0;}
+    p{padding-top: @space-sm ;}
+    .ant-popover-arrow{background-color: #485465;}
+    a{ color: #F8F8F8;
+      &:hover{ color: @primary-color;}
+    }
+  }
+  .drawer-lg { width: 520px;}
+  .drawer-base { width: 448px;}
+  .drawer-sm{ width: 350px;}
+  .nowrap{ white-space: nowrap;
+    td, th{ white-space: nowrap;}
+  }
+  .ant-input-lg{ height: @line-height-sm ; }
+  .ant-select-lg .ant-select-selection--single{ height: @line-height-sm ; }
+  .ant-select-lg .ant-select-selection__rendered { line-height: @line-height-sm ; }
+  .ant-select-open .ant-select-selection{ box-shadow: none; outline: none; }
+  .ant-select-selection:focus,.ant-select-selection:active{ box-shadow: none; }
+  .ant-select-disabled .ant-select-selection{color: @text-color-secondary; background-color: @background-color-content;}
+  .ant-table tr:nth-of-type(even){background-color: @background-color-base;}
+  .ant-form{ // 重置form相关
+    .ant-form-item{margin-bottom: @space-big;}
+  }
+  .ant-modal-mask{ background-color: rgba(74, 74, 74, 0.4);}
+  .ant-modal{display: flex; flex-direction: column; justify-content: center;padding-bottom: 0px;}
+    .ant-input[disabled]{ color: @text-color-secondary; background-color: @background-color-content;}
+  .ant-select-dropdown-menu-item{ line-height: @line-height-sm;}
+  .ant-select-dropdown{ 
+    .ant-select-dropdown-menu-item{ padding:@space-sm @space-base;}
+  }
+  .ant-btn[disabled]{
+    span{ color: @text-color-secondary;} // 禁用按钮的颜色
+  }
+  .ant-tabs{ height: auto;
+    .ant-tabs-bar{ margin-bottom: 0;}
+  }
+  .ant-input-suffix .anticon-close-circle{ opacity: 0.4; cursor: pointer;// 输入框结尾的清空按钮
+    &:hover{opacity: 0.6;}
+  } 
+  .ant-form-item-label{ text-overflow: ellipsis;}
+  .noborder{border: 0;
+    &:focus{ border: 0; box-shadow: none;}
+  }
+  .ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected{ background-color: #ddeffb;}
+  .ant-tree li .ant-tree-node-content-wrapper{ height: auto; line-height: normal;}
+  ul{margin: 0; padding-left: 0;}
+  .ant-layout-footer{ background: transparent;}
+  .ant-layout-sider-children{ height: auto;}
+  h1, h2, h3, h4, h5, h6, p{ margin-bottom: 0;} // 默认p标签底部没有外边距
+  .ant-divider{width: 0; border-right: @border-split;}
+  .ant-form .ant-form-item, .ant-form-item{ margin-bottom: @space-big;}
+  // .ant-input{height: @line-height-sm;}
+  // .ant-select-selection--single{height: @line-height-sm; line-height: @line-height-sm;}
+  // .ant-btn-lg{ font-size: @font-size-base; height: @line-height-sm;}
+  .ant-btn-danger[disabled],.ant-btn-primary[disabled] {color: @text-color-secondary; background-color: @background-color-content;}
+  .ant-menu-dark{
+    .ant-menu-sub{background: @nav-background;}
+    .ant-menu-item{
+      &:hover{ background-color: #4c577b;}
+    }
+  }
+  // 不要focus的效果
+  .ant-btn.ant-btn-primary:focus{background-color: @primary-color; border-color: @primary-color;}
+  .ant-popover{
+    .ant-popover-buttons{
+      button:first-of-type{float: right;margin: 0 0 0 10px;}
+      // .ant-btn-primary{float: left;}
+    }
+  }
+  .ant-tabs{ height: auto;}
+  .center{ text-align: center;}
+  .ant-input-suffix .anticon-close-circle{ opacity: 0.4; cursor: pointer;} // 输入框结尾的清空按钮
+  .ant-input-suffix .anticon-close-circle:hover{opacity: 0.6;}
+  .ant-form-item-label{ text-overflow: ellipsis;}
+  .noborder{border: 0;
+    &:focus{ border: 0; box-shadow: none;}
+  }
+  .ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected{ background-color: #ddeffb;}
+  .ant-tree li .ant-tree-node-content-wrapper{ height: auto; line-height: normal;}
+  ul{margin: 0; padding-left: 0;}
+  .ant-layout-footer{ background: transparent;}
+  .ant-layout-sider-children{ height: auto;}
+  h1, h2, h3, h4, h5, h6, p{ margin-bottom: 0;}
+  .ant-modal{display: flex; flex-direction: column; justify-content: center;
+    .ant-modal-body{max-height: 600px;min-height: 120px; overflow-y: auto;display: flex;flex-direction: column;
+      .ant-table-header{flex:0 0 auto;}
+    }
+  }
+  .ant-divider{width: 0; border-right: @border-split;}
+  .ant-menu-dark{
+    .ant-menu-sub{background: @nav-background;}
+    .ant-menu-item{
+      &:hover{ background-color: #4c577b;}
+    }
+  }
+  .esriPopup{
+    .esriPopupWrapper{width: 360px;
+      .titlePane{background-color: #fff;border-bottom:@border-base;
+        .title{line-height: 35px;padding: 0 20px 0 10px;color: #4A4A4A;}
+        .titleButton.close{top: 9px;right: 8px;background-image: none;
+          &::before,&::after{content:'';width: 12px;height: 1px;top:8px;transform: rotate(45deg);background-color:#bababa;display: block;position: absolute;}
+          &::after{transform: rotate(-45deg)}
+        }
+      }
+  
+      .contentPane{background-color: #fff;padding:@space-base @space-big;color:#666;}
+      .actionsPane{background-color: #fff;}
+      a{text-decoration: none;}
+    }
+  }
+}
+
+// 空间大数据被嵌入模式下的样式
+.isIframe{
+  #content-container{padding: 0;}
+  .mainnav-container, .breadcrumb{display: none;}
+  #nav{ margin-top: 0;}
+}
+#container {
+  position: relative; min-width: 290px; overflow: hidden; animation: fade-in .3s ease-out 0s 1 normal forwards;
+}
+@keyframes fade-in {
+  from {opacity: 0.2;}
+  to {opacity: 1;}
+}
+#root, #container {
+  height: @full-size;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+// table
+td a {
+  user-select: none;
+}
+// form
+#loading-box {
+  width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center;
+}
+#container {
+  /* header */
+  .header {
+    background: @g-header-bg-color; height: @g-header-height; .flex(); justify-content: space-between; color: @white; font-size: @font-size-hg ;
+    .left-section, .right-container {
+      .flex();
+    }
+    .icon-container {
+      .flex-center(); padding: 0 15px; height: @full-size; 
+      .header-icon {
+        display: block; width: 40px; height: 40px; .background-image(); background-image: url(../images/doraemon.png); background-size: contain; color: @white;
+      }
+    }
+    .func-section {
+      .flex(); font-size: @font-size-lg;
+      .divider {
+        display: inline-block; width: 2px; positioN: relative;
+        &:after {
+          content: ''; width: 100%; height: 1em; position: absolute; top: 50%; transform: translateY(-.5em); background: white;
+        } 
+      }
+      & > a, span {
+        .pointer(); .flex-center(); margin: 0 15px; position: relative; transition: transform .2s ease-out, text-shadow .3s linear;
+        &.text {
+          cursor: auto !important;
+        }
+        &:not(.text):hover {
+          transform: scale(1.1); text-shadow: rgba(255, 255, 255, 1) 0 0 2px;
+        }
+      }
+    }
+  }
+  /* content */
+  #content {
+    width: @full-size; height: calc(~"@{full-size} - @{g-header-height}"); overflow-x: hidden; overflow-y: hidden; .flex();
+  }
+  /* sidenav */
+  #sidenav {
+    height: @full-size; overflow-x: hidden; overflow-y: auto; background: @nav-background;
+    &>ul.ant-menu {
+      background: @navbar-background;
+    }
+  }
+  /* content */
+  #main {
+    flex: 1; height: @full-size; overflow: auto;
+    #main-box {
+      padding: 15px; min-width: 1042px; box-sizing: border-box;
+    }
+  }
+  #top-section {
+    margin-bottom: 15px;
+    & > button {
+      margin-right: 15px;
+    }
+  }
+}

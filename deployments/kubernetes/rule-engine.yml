@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ruleengine
+spec:
+  template:
+    metadata:
+      labels:
+        app: ruleengine
+    spec:
+      containers:
+      - name: ruleengine
+        image: r.qihoo.cloud/infra/rule-engine:latest
+        args:
+          - --gateway.url=http://doraemon-web:8080
+          - --log.level=info
+        resources:
+          limits:
+            memory: 1Gi
+            cpu: '1'
+          requests:
+            memory: 1Gi
+            cpu: '0.5' 

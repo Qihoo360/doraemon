@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+
+  mysql:
+    image: mysql:5.6.41
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+    networks:
+      - default
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+
+  doraemon-backend:
+    image: r.qihoo.cloud/infra/alert-gateway:latest
+    command: ./doraemon
+    environment:
+      GOPATH: "/go"
+    volumes:
+      - ./conf/app.conf:/opt/doraemon/conf/app.conf
+    depends_on:
+      - mysql
+    restart: always
+    networks:
+      - default
+    ports:
+      - "8080:8080"
+
+  doraemon-frontend:
+    image: r.qihoo.cloud/infra/doraemon-frontend:latest
+    volumes:
+      - ./conf/config.js:/usr/local/openresty/nginx/html/config.js
+    depends_on:
+      - doraemon-backend
+    restart: always
+    networks:
+      - default
+    ports:
+      - "32000:80"
+
+  ruleengine:
+    image: r.qihoo.cloud/infra/rule-engine:latest
+    depends_on:
+      - doraemon-backend
+    command:
+      - --gateway.url=http://doraemon-backend:8080
+      - --log.level=info

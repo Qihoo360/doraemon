@@ -1,0 +1,2 @@
+[English](https://git.qihoo.cloud/sre/doraemon/blob/master/cmd/alert-gateway/readme.md) | [中文](https://git.qihoo.cloud/sre/doraemon/blob/master/cmd/alert-gateway/readme-CN.md)  
+这里是报警网关（Alert Gateway）和Web-UI后端的代码，基于 **[Beego](https://beego.me)** 框架开发。

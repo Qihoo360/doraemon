@@ -1,0 +1,17 @@
+# /node_modules/* and /bower_components/* ignored by default
+
+/*
+!app
+
+/test
+
+/app/components/draw/__mocks__/draw.js
+
+/app/configs/__mocks__/ajax.js
+/app/resource
+
+/node_modules
+
+# app/configs
+# app/components
+# app/pages

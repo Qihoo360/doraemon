@@ -45,7 +45,7 @@ $ git clone https://github.com/Qihoo360/doraemon.git
 
 - Start Doraemon
 
-  Start server by docker-compose at Doraemon project.
+Start server by docker-compose at Doraemon project.
 
 ```bash
 $ cd deployments/docker-compose/

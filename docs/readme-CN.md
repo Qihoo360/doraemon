@@ -3,7 +3,7 @@
 Doraemon是一个基于 **[Prometheus](https://prometheus.io)** 的监控系统。该系统主要由三个组件组成——计算引擎（Rule Engine），报警网关（Alert Gateway）以及Web-UI。与Prometheus使用静态的配置文件来配置报警规则不同，Doraemon可以通过Web-UI动态的配置加载报警规则。此外，Doraemon还集成了许多自定义的报警功能。
 
 # 架构  
-![Architecture](docs/images/Architecture.png)  
+![Architecture](images/Architecture.png)  
 
 # 术语  
 - 报警规则: 与Prometheus中的 **[报警规则](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/)** 概念相同。

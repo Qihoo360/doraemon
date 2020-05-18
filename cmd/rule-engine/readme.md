@@ -1,5 +1,5 @@
 # Rule Engine
-[English](https://github.com/Qihoo360/doraemon/blob/master/cmd/rule-engine/readme.md) | [中文](https://git.qihoo.cloud/sre/doraemon/blob/master/cmd/rule-engine/readme-CN.md)    
+[English](https://github.com/Qihoo360/doraemon/blob/master/cmd/rule-engine/readme.md) | [中文](https://github.com/Qihoo360/doraemon/blob/master/cmd/rule-engine/readme-CN.md)    
 The core of rule engine is based on prometheus **[modules](https://github.com/prometheus/prometheus/rules)** , from which we separate the computing module and encapsulate it into a separate service.
 
 ## Functions
@@ -14,5 +14,3 @@ The core of rule engine is based on prometheus **[modules](https://github.com/pr
 ```
 docker run <image> --gateway.url=http://alert-gateway:port
 ```
-
-

@@ -4,7 +4,8 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/Qihoo360/doraemon/blob/master/LICENSE)
 
-Doraemon is a **[Prometheus](https://prometheus.io)** based monitor system ,which are made up of three components——the Rule Engine,the Alert Gateway and the Web-UI.Instead of configuring alarm rules in config file,this system can configure alarm rules dynamically through the Web-UI and integrates many customized alarm functions. 
+Doraemon is a **[Prometheus](https://prometheus.io)** based monitor system ,which are made up of three components —— the Rule Engine,the Alert Gateway and the Web-UI.
+Instead of configuring alarm rules in config file,this system can configure alarm rules dynamically through the Web-UI and integrates many customized alarm functions. 
 
 ## Features
 
@@ -16,14 +17,15 @@ Doraemon is a **[Prometheus](https://prometheus.io)** based monitor system ,whic
 - LDAP/OAuth 2.0/DB Multiple login mode support.
 
 ## Architecture
+
 The whole system adopts the separation of front and back ends, in which the front end uses React for data interaction and display.The backend uses the **[Beego](https://beego.me)** framework for data interface processing and data for MySQL storage.  
   
 ![Architecture](docs/images/Architecture.png)  
 
 ## Component
-- Rule Engine:Pull rules from Alert Gateway,and then send the rules to prometheus server to caculate and push the alerts to Alert Gateway.
-- Alert Gateway:Aggregate the alarms and send them to alarm receivers according to their alarm strategies.
-- Web UI:For adding rules,alarm strategies and maintain groups.To confirm alarms and view historical alarm records.
+- Rule Engine: Pull rules from Alert Gateway,and then send the rules to prometheus server to caculate and push the alerts to Alert Gateway.
+- Alert Gateway: Aggregate the alarms and send them to alarm receivers according to their alarm strategies.
+- Web UI: For adding rules,alarm strategies and maintain groups.To confirm alarms and view historical alarm records.
 
 ## Dependence
 
@@ -38,7 +40,7 @@ The whole system adopts the separation of front and back ends, in which the fron
 - Clone
 
 ```bash
-$ go get 
+$ git clone https://github.com/Qihoo360/doraemon.git
 ```
 
 - Start Doraemon

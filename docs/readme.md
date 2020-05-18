@@ -3,7 +3,7 @@
 Doraemon is a **[Prometheus](https://prometheus.io)** based monitor system ,which are made up of three components——the Rule Engine,the Alert Gateway and the Web-UI.Instead of configuring alarm rules in config file,this system can configure alarm rules dynamically through the Web-UI and integrates many customized alarm functions. 
 
 # Architecture  
-![Architecture](docs/images/Architecture.png)  
+![Architecture](images/Architecture.png)  
 
 # Terminology  
 - Rules:The same as **[alerting rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/)** in prometheus.  

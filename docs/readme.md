@@ -1,4 +1,4 @@
-[English](https://github.com/Qihoo360/doraemon/blob/master/docs/readme.md) | [中文](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/readme-CN.md)  
+[English](https://github.com/Qihoo360/doraemon/blob/master/docs/readme.md) | [中文](https://github.com/Qihoo360/doraemon/blob/master/docs/readme-CN.md)  
 # Introduction  
 Doraemon is a **[Prometheus](https://prometheus.io)** based monitor system ,which are made up of three components——the Rule Engine,the Alert Gateway and the Web-UI.Instead of configuring alarm rules in config file,this system can configure alarm rules dynamically through the Web-UI and integrates many customized alarm functions. 
 

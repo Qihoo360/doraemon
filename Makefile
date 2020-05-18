@@ -1,10 +1,10 @@
 .PHONY: run-ruleengine run-backend run-frontend
 
-gateway.url = "360cloud"
+gateway.url = "default"
 MAKEFLAGS += --warn-undefined-variables
 
 # Build variables
-REGISTRY_URI :=hub.docker.com
+REGISTRY_URI :=360cloud
 RELEASE_VERSION :=$(shell git describe --always --tags)
 UI_BUILD_VERSION :=v1.0.0
 SERVER_BUILD_VERSION :=v1.0.0

@@ -1,4 +1,4 @@
-[English](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/readme.md) | [中文](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/readme-CN.md)  
+[English](https://github.com/Qihoo360/doraemon/blob/master/docs/readme.md) | [中文](https://github.com/Qihoo360/doraemon/blob/master/docs/readme-CN.md)  
 # 简介  
 Doraemon是一个基于 **[Prometheus](https://prometheus.io)** 的监控系统。该系统主要由三个组件组成——计算引擎（Rule Engine），报警网关（Alert Gateway）以及Web-UI。与Prometheus使用静态的配置文件来配置报警规则不同，Doraemon可以通过Web-UI动态的配置加载报警规则。此外，Doraemon还集成了许多自定义的报警功能。
 
@@ -20,23 +20,23 @@ Doraemon是一个基于 **[Prometheus](https://prometheus.io)** 的监控系统�
 
 # 使用文档  
 ### 安装步骤
-- **[用户安装步骤](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/UserInstallationSteps-CN.md)**  
-- **[开发者安装步骤](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/DeveloperInstallationSteps-CN.md)**  
+- **[用户安装步骤](https://github.com/Qihoo360/doraemon/blob/master/docs/UserInstallationSteps-CN.md)**  
+- **[开发者安装步骤](https://github.com/Qihoo360/doraemon/blob/master/docs/DeveloperInstallationSteps-CN.md)**  
 
 ### 配置文件
-- **[配置项说明](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/ConfigurationItemDescription-CN.md)**  
+- **[配置项说明](https://github.com/Qihoo360/doraemon/blob/master/docs/ConfigurationItemDescription-CN.md)**  
 
 ### 本地用户管理
-- **[默认系统用户](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/DefaultUser-CN.md)**
-- **[添加用户](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/AddUser-CN.md)**
-- **[删除用户](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/DeleteUser-CN.md)**
-- **[修改密码](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/ChangePassword-CN.md)**
+- **[默认系统用户](https://github.com/Qihoo360/doraemon/blob/master/docs/DefaultUser-CN.md)**
+- **[添加用户](https://github.com/Qihoo360/doraemon/blob/master/docs/AddUser-CN.md)**
+- **[删除用户](https://github.com/Qihoo360/doraemon/blob/master/docs/DeleteUser-CN.md)**
+- **[修改密码](https://github.com/Qihoo360/doraemon/blob/master/docs/ChangePassword-CN.md)**
 
 ### 系统使用说明
-- **[创建报警计划以及报警策略](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/CreateAlarmStrategies-CN.md)**    
-- **[添加数据源](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/AddDataSource-CN.md)**  
-- **[添加报警规则](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/AddRules-CN.md)**  
-- **[添加报警接收组](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/AddAlarmGroup-CN.md)**  
-- **[添加维护组](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/AddMaintainGroup-CN.md)**  
-- **[报警确认](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/ConfirmAlarms-CN.md)**  
-- **[查看历史报警](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/ViewHistoricalAlarms-CN.md)**  
+- **[创建报警计划以及报警策略](https://github.com/Qihoo360/doraemon/blob/master/docs/CreateAlarmStrategies-CN.md)**    
+- **[添加数据源](https://github.com/Qihoo360/doraemon/blob/master/docs/AddDataSource-CN.md)**  
+- **[添加报警规则](https://github.com/Qihoo360/doraemon/blob/master/docs/AddRules-CN.md)**  
+- **[添加报警接收组](https://github.com/Qihoo360/doraemon/blob/master/docs/AddAlarmGroup-CN.md)**  
+- **[添加维护组](https://github.com/Qihoo360/doraemon/blob/master/docs/AddMaintainGroup-CN.md)**  
+- **[报警确认](https://github.com/Qihoo360/doraemon/blob/master/docs/ConfirmAlarms-CN.md)**  
+- **[查看历史报警](https://github.com/Qihoo360/doraemon/blob/master/docs/ViewHistoricalAlarms-CN.md)**  

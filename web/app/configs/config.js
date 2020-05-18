@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === 'testing') { // 测试环境
 // if (process.env.NODE_ENV === 'production') { // 发布环境
 //   _port = '16028'
 //   _serverIp = 'http://10.202.3.130'
-//   _baseURL = 'http://doraemon.qihoo.cloud/'
+//   _baseURL = 'http://360yun.org'
 // }
 
 export const serverIp = _serverIp

@@ -1,10 +1,10 @@
 .PHONY: run-ruleengine run-backend run-frontend
 
-gateway.url = "default"
+gateway.url = "360cloud"
 MAKEFLAGS += --warn-undefined-variables
 
 # Build variables
-REGISTRY_URI :=r.qihoo.cloud/infra
+REGISTRY_URI :=hub.docker.com
 RELEASE_VERSION :=$(shell git describe --always --tags)
 UI_BUILD_VERSION :=v1.0.0
 SERVER_BUILD_VERSION :=v1.0.0
@@ -30,7 +30,6 @@ build-frontend-image:
 build-ruleengine-image:
 	@echo "version: $(RELEASE_VERSION)"
 	docker build --no-cache -t $(REGISTRY_URI)/rule-engine:$(RELEASE_VERSION) -f build/rule-engine/Dockerfile .
-
 
 push-image:
 	docker tag $(REGISTRY_URI)/alert-gateway:$(RELEASE_VERSION) $(REGISTRY_URI)/alert-gateway:latest

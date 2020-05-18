@@ -14,7 +14,7 @@ services:
       - "3306:3306"
 
   doraemon-backend:
-    image: r.qihoo.cloud/infra/alert-gateway:latest
+    image: 360cloud/alert-gateway:latest
     command: ./doraemon
     environment:
       GOPATH: "/go"
@@ -29,7 +29,7 @@ services:
       - "8080:8080"
 
   doraemon-frontend:
-    image: r.qihoo.cloud/infra/doraemon-frontend:latest
+    image: 360cloud/doraemon-frontend:latest
     volumes:
       - ./conf/config.js:/usr/local/openresty/nginx/html/config.js
     depends_on:
@@ -41,7 +41,7 @@ services:
       - "32000:80"
 
   ruleengine:
-    image: r.qihoo.cloud/infra/rule-engine:latest
+    image: 360cloud/rule-engine:latest
     depends_on:
       - doraemon-backend
     command:

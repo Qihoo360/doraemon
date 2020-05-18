@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: ruleengine
-        image: r.qihoo.cloud/infra/rule-engine:latest
+        image: 360cloud/rule-engine:latest
         args:
           - --gateway.url=http://doraemon-web:8080
           - --log.level=info

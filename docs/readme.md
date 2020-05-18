@@ -1,4 +1,4 @@
-[English](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/readme.md) | [中文](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/readme-CN.md)  
+[English](https://github.com/Qihoo360/doraemon/blob/master/docs/readme.md) | [中文](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/readme-CN.md)  
 # Introduction  
 Doraemon is a **[Prometheus](https://prometheus.io)** based monitor system ,which are made up of three components——the Rule Engine,the Alert Gateway and the Web-UI.Instead of configuring alarm rules in config file,this system can configure alarm rules dynamically through the Web-UI and integrates many customized alarm functions. 
 
@@ -21,23 +21,23 @@ Doraemon is a **[Prometheus](https://prometheus.io)** based monitor system ,whic
 
 # Instructions  
 ### Installation Steps
-- **[User Installation Steps](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/UserInstallationSteps.md)**  
-- **[Developer Installation Steps](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/DeveloperInstallationSteps.md)**
+- **[User Installation Steps](https://github.com/Qihoo360/doraemon/blob/master/docs/UserInstallationSteps.md)**  
+- **[Developer Installation Steps](https://github.com/Qihoo360/doraemon/blob/master/docs/DeveloperInstallationSteps.md)**
 
 ### Configuration File
-- **[Configuration Item Description](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/ConfigurationItemDescription.md)**  
+- **[Configuration Item Description](https://github.com/Qihoo360/doraemon/blob/master/docs/ConfigurationItemDescription.md)**  
 
 ### Local User Managment
-- **[The Default System User](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/DefaultUser.md)**
-- **[Add Local User](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/AddUser.md)**
-- **[Delete Local User](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/DeleteUser.md)**
-- **[Change Password](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/ChangePassword.md)**
+- **[The Default System User](https://github.com/Qihoo360/doraemon/blob/master/docs/DefaultUser.md)**
+- **[Add Local User](https://github.com/Qihoo360/doraemon/blob/master/docs/AddUser.md)**
+- **[Delete Local User](https://github.com/Qihoo360/doraemon/blob/master/docs/DeleteUser.md)**
+- **[Change Password](https://github.com/Qihoo360/doraemon/blob/master/docs/ChangePassword.md)**
 
 ### Alarm System Instructions
-- **[Create Alarm Plans and Strategies](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/CreateAlarmStrategies.md)**    
-- **[Add Data Source](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/AddDataSource.md)**  
-- **[Add Rules](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/AddRules.md)**  
-- **[Add Alarm Group](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/AddAlarmGroup.md)**  
-- **[Add Maintain Group](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/AddMaintainGroup.md)**  
-- **[Confirm Alarms](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/ConfirmAlarms.md)**  
-- **[View Historical Alarms](https://git.qihoo.cloud/sre/doraemon/blob/master/docs/ViewHistoricalAlarms.md)**  
+- **[Create Alarm Plans and Strategies](https://github.com/Qihoo360/doraemon/blob/master/docs/CreateAlarmStrategies.md)**    
+- **[Add Data Source](https://github.com/Qihoo360/doraemon/blob/master/docs/AddDataSource.md)**  
+- **[Add Rules](https://github.com/Qihoo360/doraemon/blob/master/docs/AddRules.md)**  
+- **[Add Alarm Group](https://github.com/Qihoo360/doraemon/blob/master/docs/AddAlarmGroup.md)**  
+- **[Add Maintain Group](https://github.com/Qihoo360/doraemon/blob/master/docs/AddMaintainGroup.md)**  
+- **[Confirm Alarms](https://github.com/Qihoo360/doraemon/blob/master/docs/ConfirmAlarms.md)**  
+- **[View Historical Alarms](https://github.com/Qihoo360/doraemon/blob/master/docs/ViewHistoricalAlarms.md)**  

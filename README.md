@@ -58,7 +58,7 @@ With the above command,you can access the local Doraemon from http://127.0.0.1:4
 
 ## Instructions
 
-**[Wiki](https://github.com/Qihoo360/doraemon/README)**
+**[Wiki](https://github.com/Qihoo360/doraemon/blob/master/docs/readme.md)**
 
 ## Contributor  
 

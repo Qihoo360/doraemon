@@ -18,7 +18,7 @@ The default configuration file of Doraemon is app.conf,which is located at cmd/a
 
 ### DataBase Configuration
 
-- DBTns: the Tns of database,for example: tcp(127.0.0.1:3306)
+- DBTns: the Tns of database,for example,"tcp(127.0.0.1:3306)"
 - DBName: the name of database
 - DBUser: the username of database
 - DBPasswd: the password of database
@@ -26,9 +26,9 @@ The default configuration file of Doraemon is app.conf,which is located at cmd/a
 
 ### Related Interface
 
-- DutyGroupUrl: The interface of duty group from which we can get the user list of this duty group,for example: "http://127.0.0.1/api/get_duty_user"
-- BrokenUrl: The interface of getting the list of fault machines,for example: "http://127.0.0.1/api/hosts/broken"
+- DutyGroupUrl: The interface of duty group from which we can get the user list of this duty group,for example,"http://127.0.0.1/api/get_duty_user"
+- BrokenUrl: The interface of getting the list of fault machines,for example,"http://127.0.0.1/api/hosts/broken"
 
 ### Domain Name of Web-UI
 
-- WebUrl: The domain name of Web-UI,for example: "http://360yun.org"
+- WebUrl: The domain name of Web-UI,for example,"http://360yun.org"

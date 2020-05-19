@@ -59,17 +59,17 @@ Besides,the current version of Filter Expression only supports exact matching.If
 }
 ```
 
-`type` refers to the type of information (`alert` refers to the alarm information;`recover` refers to the alarm recovery information).
-`time` refers to the time when the alarm is sent.
-`rule_id` refers to the ID of the rule corresponding to the alarm.
-`to` refers to the alarm receivers (the person in the alarm receive group will be added automatically).
-`confirm_link` refers to the alarm confirm link.
-`alerts` refers to the aggregated alarms.
-`id` refers to the ID of the alarm record.
-`count` is the alarm duration (in minutes).
-`value` is the current value of the alarm.
-`summary` is the summary of the alarm.
-`hostname` is the hostname of alarm host.
+- `type` refers to the type of information (`alert` refers to the alarm information;`recover` refers to the alarm recovery information).
+- `time` refers to the time when the alarm is sent.
+- `rule_id` refers to the ID of the rule corresponding to the alarm.
+- `to` refers to the alarm receivers (the person in the alarm receive group will be added automatically).
+- `confirm_link` refers to the alarm confirm link.
+- `alerts` refers to the aggregated alarms.
+- `id` refers to the ID of the alarm record.
+- `count` is the alarm duration (in minutes).
+- `value` is the current value of the alarm.
+- `summary` is the summary of the alarm.
+- `hostname` is the hostname of alarm host.
 
 The format of alarm recovery information sent by HOOK is as follow:  
 
@@ -112,7 +112,7 @@ The other contents are the same as the alarm information.
 
 3. **The Duty Group** 
 
-- For the duty group,Doraemon will send an HTTP GET request to the target server according to the DutyGroupUrl in the **[configuration file](ConfigurationItemDescription.md)** to get the group members,that is,`DutyGroupUrl?Teamid=1&day=2020-02-21`,where Teamid is the group's ID and day is the date of the day.Then,the target server needs to return the following JSON format information(account is the user who is on duty):
+- For the duty group,Doraemon will send an HTTP GET request to the target server according to the DutyGroupUrl in the **[configuration file](ConfigurationItemDescription.md)** to get the group members,that is,`DutyGroupUrl?Teamid=1&day=2020-02-21`,where Teamid is the group's ID and day is the date of the day.Then,the target server needs to return the following JSON format information(account is the user who is on duty).
 
 ```json
 {

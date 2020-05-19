@@ -54,7 +54,8 @@ $ cd deployments/docker-compose/
 $ docker-compose up -d
 ```
 
-With the above command,you can access the local Doraemon from http://127.0.0.1:4200,the default administrator account admin:123456.  
+With the above command,you can access the local Doraemon from http://127.0.0.1:4200.
+The default administrator account admin:123456.  
 
 ## Instructions
 

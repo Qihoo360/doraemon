@@ -22,13 +22,13 @@ When Doraemon runs,it will create the database and initialize the data automatic
 
 ## Configure the Configmap
 
-To configurate related information such as database connection,user should modify the configmap in [deployments/kubernetes/doraemon.yml](deployments/kubernetes/doraemon.yml) according to the [instruction](docs/ConfigurationItemDescription.md).
+To configurate related information such as database connection,user should modify the configmap in [deployments/kubernetes/doraemon.yml](https://github.com/Qihoo360/doraemon/blob/master/deployments/kubernetes/doraemon.yml) according to the [instruction](ConfigurationItemDescription.md).
 
-> If use [deployments/kubernetes/mysql.yml](deployments/kubernetes/mysql.yml) to startup MySQL,there is no need to modify the configmap,which connects MySQL through the inner domainname.
+> If use [deployments/kubernetes/mysql.yml](https://github.com/Qihoo360/doraemon/blob/master/deployments/kubernetes/mysql.yml) to startup MySQL,there is no need to modify the configmap,which connects MySQL through the inner domainname.
 
 ## Startup Doraemon
 
-Before startup the Doraemon,you should modify the configmap in [deployments/kubernetes/doraemon.yml](deployments/kubernetes/doraemon.yml).Replace the "nodeip" of "baseURL" in "doraemon-ui" with the nodeip of any node in the kubernetes cluster.
+Before startup the Doraemon,you should modify the configmap in [deployments/kubernetes/doraemon.yml](https://github.com/Qihoo360/doraemon/blob/master/deployments/kubernetes/doraemon.yml).Replace the "nodeip" of "baseURL" in "doraemon-ui" with the nodeip of any node in the kubernetes cluster.
 
 ```bash
 $ kubectl apply -f deployments/kubernetes/doraemon.yml
@@ -46,7 +46,7 @@ $ kubectl apply -f deployments/kubernetes/rule-engine.yml
 
 ## Modify the Configuration File
  
-Replace the "localhost" in the [deployments/docker-compose/conf/config.js](deployments/docker-compose/conf/config.js) with the IP address of the current host.
+Replace the "localhost" in the [deployments/docker-compose/conf/config.js](https://github.com/Qihoo360/doraemon/blob/master/deployments/docker-compose/conf/config.js) with the IP address of the current host.
 
 ## Startup Doraemon with Docker-Compose
 

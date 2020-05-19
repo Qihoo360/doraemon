@@ -5,6 +5,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/Qihoo360/doraemon/blob/master/LICENSE)
 
 Doraemon is a **[Prometheus](https://prometheus.io)** based monitor system ,which are made up of three components —— the Rule Engine,the Alert Gateway and the Web-UI.
+
 Instead of configuring alarm rules in config file,this system can configure alarm rules dynamically through the Web-UI and integrates many customized alarm functions. 
 
 ## Features
@@ -18,7 +19,8 @@ Instead of configuring alarm rules in config file,this system can configure alar
 
 ## Architecture
 
-The whole system adopts the separation of front and back ends, in which the front end uses React for data interaction and display.The backend uses the **[Beego](https://beego.me)** framework for data interface processing and data for MySQL storage.  
+The whole system adopts the separation of front and back ends,in which the front end uses React for data interaction and display.
+The backend uses the **[Beego](https://beego.me)** framework for data interface processing and data for MySQL storage.  
   
 ![Architecture](docs/images/Architecture.png)  
 
@@ -52,7 +54,7 @@ $ cd deployments/docker-compose/
 $ docker-compose up -d
 ```
 
-With the above command, you can access the local Doraemon from http://127.0.0.1:4200, the default administrator account admin:123456.  
+With the above command,you can access the local Doraemon from http://127.0.0.1:4200,the default administrator account admin:123456.  
 
 ## Instructions
 

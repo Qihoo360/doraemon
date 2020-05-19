@@ -3,10 +3,11 @@
 ## Clone Source Code from Github
 
 ```shell
-$ git clone
+$ git clone https://github.com/Qihoo360/doraemon.git
 ```
 
 ## Install Dependent Environment
+
 Doraemon relies on MySQL,where MySQL is a required service.
 
 ```shell
@@ -22,6 +23,7 @@ When Doraemon runs,it will create the database and initialize the data automatic
 ## Configure the Configmap
 
 To configurate related information such as database connection,user should modify the configmap in [deployments/kubernetes/doraemon.yml](deployments/kubernetes/doraemon.yml) according to the [instruction](docs/ConfigurationItemDescription.md).
+
 > If use [deployments/kubernetes/mysql.yml](deployments/kubernetes/mysql.yml) to startup MySQL,there is no need to modify the configmap,which connects MySQL through the inner domainname.
 
 ## Startup Doraemon

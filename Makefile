@@ -31,6 +31,7 @@ build-ruleengine-image:
 	@echo "version: $(RELEASE_VERSION)"
 	docker build --no-cache -t $(REGISTRY_URI)/rule-engine:$(RELEASE_VERSION) -f build/rule-engine/Dockerfile .
 
+
 push-image:
 	docker tag $(REGISTRY_URI)/alert-gateway:$(RELEASE_VERSION) $(REGISTRY_URI)/alert-gateway:latest
 	docker push $(REGISTRY_URI)/alert-gateway:$(RELEASE_VERSION)

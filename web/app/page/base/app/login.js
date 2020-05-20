@@ -25,7 +25,7 @@ export default class Login extends Component {
     this.query = parseQueryString(location.search)
   }
   state = {
-    chooseMethod: 'none',
+    chooseMethod: 'local',
     defaultName: '',
   }
   onFinish = (method) => {
@@ -113,7 +113,7 @@ export default class Login extends Component {
               {chooseMethod === 'none' && <p className="choose-text">请选择登录方式 ：</p>}
               {
                 (data && chooseMethod === 'none') && (<Button type="primary" block onClick={() => this.onFinish()} style={{ marginBottom: '15px' }}>
-                已有账号，直接登录<Icon type="right" />
+                  已有账号，直接登录<Icon type="right" />
                 </Button>)
               }
               <Row type="flex" justify="space-between" style={{ color: 'white' }}>
@@ -131,9 +131,6 @@ export default class Login extends Component {
                   <Button type="primary" block onClick={() => this.onFinish('oauth')} className="login-form-button">
                     OAuth
                   </Button>
-                </Col>
-                <Col style={{ fontSize: '12px' }} className={chooseMethod === 'none' ? 'hide' : ''}>
-                  <a onClick={() => this.chooseOther()}>选择其他登录方式<Icon type="right" /></a>
                 </Col>
               </Row>
             </Form.Item>

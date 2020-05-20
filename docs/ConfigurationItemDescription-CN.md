@@ -3,7 +3,7 @@
 Doraemon默认的配置文件位于cmd/alert-gateway/conf/app.conf。
 
 ### 基本配置
-*[参考Beego的配置](https://beego.me/docs/mvc/controller/config.md)*
+*[参考Beego的配置](https://beego.me/mvc/controller/config.md)*
 - appname: App的名称
 - httpport: http监听端口，默认是8080
 - runmode: 运行模式，开发模式（dev）或者生产模式（prod）

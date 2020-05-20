@@ -1,12 +1,12 @@
-[English](docs/readme.md) | [中文](docs/readme-CN.md)  
+[English](readme.md) | [中文](readme-CN.md)  
 # 简介  
 Doraemon是一个基于 **[Prometheus](https://prometheus.io)** 的监控系统。该系统主要由三个组件组成——计算引擎（Rule Engine），报警网关（Alert Gateway）以及Web-UI。与Prometheus使用静态的配置文件来配置报警规则不同，Doraemon可以通过Web-UI动态的配置加载报警规则。此外，Doraemon还集成了许多自定义的报警功能。
 
 # 架构  
-![Architecture](docs/images/Architecture.png)  
+![Architecture](images/Architecture.png)  
 
 # 术语  
-- 报警规则: 与Prometheus中的 **[报警规则](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/)** 概念相同。
+- 报警规则: 与Prometheus中的 **[报警规则](https://prometheus.io/prometheus/latest/configuration/alerting_rules/)** 概念相同。
 - 数据源: Prometheus Server的URL，由Rule Engine将报警规则下发至该URL进行计算。
 - 报警接收组: 由多个报警接收人组成的组。 
 - 值班组: 和报警接收组类似，但是它是动态的从接口中获取组成员的列表。
@@ -20,23 +20,23 @@ Doraemon是一个基于 **[Prometheus](https://prometheus.io)** 的监控系统�
 
 # 使用文档  
 ### 安装步骤
-- **[使用Docker-Compose部署](docs/InstallByDocker-CN.md)**  
-- **[使用Kubernetes部署](docs/InstallByK8s-CN.md)**  
+- **[使用Docker-Compose部署](InstallByDocker-CN.md)**  
+- **[使用Kubernetes部署](InstallByK8s-CN.md)**  
 
 ### 配置文件
-- **[配置项说明](docs/ConfigurationItemDescription-CN.md)**  
+- **[配置项说明](ConfigurationItemDescription-CN.md)**  
 
 ### 本地用户管理
-- **[默认系统用户](docs/DefaultUser-CN.md)**
-- **[添加用户](docs/AddUser-CN.md)**
-- **[删除用户](docs/DeleteUser-CN.md)**
-- **[修改密码](docs/ChangePassword-CN.md)**  
+- **[默认系统用户](DefaultUser-CN.md)**
+- **[添加用户](AddUser-CN.md)**
+- **[删除用户](DeleteUser-CN.md)**
+- **[修改密码](ChangePassword-CN.md)**  
 
 ### 系统使用说明
-- **[创建报警计划以及报警策略](docs/CreateAlarmStrategies-CN.md)**    
-- **[添加数据源](docs/AddDataSource-CN.md)**  
-- **[添加报警规则](docs/AddRules-CN.md)**  
-- **[添加报警接收组](docs/AddAlarmGroup-CN.md)**  
-- **[添加维护组](docs/AddMaintainGroup-CN.md)**  
-- **[报警确认](docs/ConfirmAlarms-CN.md)**  
-- **[查看历史报警](docs/ViewHistoricalAlarms-CN.md)**  
+- **[创建报警计划以及报警策略](CreateAlarmStrategies-CN.md)**    
+- **[添加数据源](AddDataSource-CN.md)**  
+- **[添加报警规则](AddRules-CN.md)**  
+- **[添加报警接收组](AddAlarmGroup-CN.md)**  
+- **[添加维护组](AddMaintainGroup-CN.md)**  
+- **[报警确认](ConfirmAlarms-CN.md)**  
+- **[查看历史报警](ViewHistoricalAlarms-CN.md)**  

@@ -1,9 +1,9 @@
 At first,add the alarm plan. 
-![addStrategies](docs/images/addStrategies.png)  
+![addStrategies](images/addStrategies.png)  
 And then add strategies of that alarm plan just created.One can add more then one strategy for each alarm plan,which can realize alarm upgrade strategy.  
-![receivers](docs/images/receivers.png)  
+![receivers](images/receivers.png)  
 To create a alarm strategy,we must choose the alarm period,fill in the alarm delays,alarm period,the receivers(multiple receivers are separated by commas),duty groups(the ID of duty group and multiple value team IDs are separated by commas),alarm groups(multiple alarm groups are separated by commas),Filter expression and the alarm method.  
-![receiveredit](docs/images/receiveredit.png)  
+![receiveredit](images/receiveredit.png)  
  1. **Filter Expression**  
  Filter expression is used to filter alarms according to labels.For example, a label such as idc in a rule's alarm information indicates which computer room the alarm comes from.If an operation and maintenance personnel is only responsible for receiving and processing alarms in Beijing computer room,then he can use a filter expression such as idc=beijing(see the above figure).Filter expression supports the following symbols:
     - "=" means equal to, for example: idc=beijing
@@ -73,11 +73,11 @@ To create a alarm strategy,we must choose the alarm period,fill in the alarm del
         There is no "confirm_link" field in the alarm recovery information.The other contents are the same as the alarm information.  
              
     - The use of hook mode can also realize the custom alarm upgrade function.Suppose that users have their own information sending gateway (http://gateway.io) ,the URL of SMS gateway of which is http://gateway.io/sms and the URL of telephone gateway of which is http://gateway.io/call .The user hopes that when the alarms lasts less than 1 hour, the SMS alarms will be sent to the operation and maintenance personnel,and if the alarm lasts more than 1 hour, the operation and maintenance leader will be informed by phone.Then,they can configure the alarm strategies as follows:  
-    ![receiveredit](docs/images/hookupgrade.png)  
-    ![addstrategyexample](docs/images/AddStragetyExample.png)
+    ![receiveredit](images/hookupgrade.png)  
+    ![addstrategyexample](images/AddStragetyExample.png)
     
 3. **The Duty Group** 
-    - For the duty group,Doraemon will send an HTTP GET request to the target server according to the DutyGroupUrl in the **[configuration file](docs/ConfigurationItemDescription.md)** to get the group members,that is, http://DutyGroupUrl?Teamid=1&day=2020-02-21 ,where Teamid is the group's ID and day is the date of the day.Then,the target server needs to return the following JSON format information(account is the user who is on duty):
+    - For the duty group,Doraemon will send an HTTP GET request to the target server according to the DutyGroupUrl in the **[configuration file](ConfigurationItemDescription.md)** to get the group members,that is, http://DutyGroupUrl?Teamid=1&day=2020-02-21 ,where Teamid is the group's ID and day is the date of the day.Then,the target server needs to return the following JSON format information(account is the user who is on duty):
         ```json
         {
             "data": [{

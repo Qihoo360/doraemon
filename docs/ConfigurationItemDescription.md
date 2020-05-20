@@ -3,7 +3,7 @@
 The default configuration file of Doraemon is app.conf,which is located at cmd/alert-gateway/conf.
 
 ### Basic Configuration
-*[Reference Beego configuration](https://beego.me/docs/mvc/controller/config.md)*
+*[Reference Beego configuration](https://beego.me/mvc/controller/config.md)*
 - appname: The name of App
 - httpport: Set the port the app listens on.By default this is 8080
 - runmode: dev/prod

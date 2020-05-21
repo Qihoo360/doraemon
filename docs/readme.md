@@ -6,7 +6,7 @@ Doraemon is a **[Prometheus](https://prometheus.io)** based monitor system ,whic
 ![Architecture](images/Architecture.png)  
 
 # Terminology  
-- Rules:The same as **[alerting rules](https://prometheus.io/prometheus/latest/configuration/alerting_rules/)** in prometheus.  
+- Rules:The same as **[alerting rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/#alerting-rules)** in prometheus.  
 - Data Source:The endpoint of prometheus server to which the rules will be sent by the Rule Engine.
 - Alarm Group:A set of username that the alarms will be sent to.
 - Duty Group:The same as alarm group,however,it's taken from an interface dynamically. 

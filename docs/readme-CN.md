@@ -6,7 +6,7 @@ Doraemon是一个基于 **[Prometheus](https://prometheus.io)** 的监控系统�
 ![Architecture](images/Architecture.png)  
 
 # 术语  
-- 报警规则: 与Prometheus中的 **[报警规则](https://prometheus.io/prometheus/latest/configuration/alerting_rules/)** 概念相同。
+- 报警规则: 与Prometheus中的 **[报警规则](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/#alerting-rules)** 概念相同。
 - 数据源: Prometheus Server的URL，由Rule Engine将报警规则下发至该URL进行计算。
 - 报警接收组: 由多个报警接收人组成的组。 
 - 值班组: 和报警接收组类似，但是它是动态的从接口中获取组成员的列表。

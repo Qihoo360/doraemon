@@ -22,11 +22,11 @@ data:
     DBLoc = "Asia%2FShanghai"
     DBConnTTL = 30
 
-    SmsUrl="http://smsurl:port/api/v1/sms"
-    LanxinUrl="http://lanxinurl:port/api/v1/lanxin/text"
-    CallUrl="http://callurl:port/api/v1/lanxin/call"
-    DutyGroupUrl="http://dutygroupurl:port/Api/getDutyUser"
-    BrokenUrl="http://brokenurl:port/api/hosts/broken"
+    SmsUrl="http://smsurl:8000/api/v1/sms"
+    LanxinUrl="http://lanxinurl:8000/api/v1/lanxin/text"
+    CallUrl="http://callurl:8000/api/v1/lanxin/call"
+    DutyGroupUrl="http://dutygroupurl:8000/Api/getDutyUser"
+    BrokenUrl="http://brokenurl:8000/api/hosts/broken"
     WebUrl="http://localhost:32000"
 
 ---

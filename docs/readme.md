@@ -23,7 +23,7 @@ Doraemon is a **[Prometheus](https://prometheus.io)** based monitor system ,whic
 ### Installation Steps
 - **[Deploy with Docker-Compose](InstallByDocker.md)**  
 - **[Deploy with Kubernetes](InstallByK8s.md)**  
-- **[Initialize Mysql Database Manually](InitMysql.md)**  
+- **[Initialize MySQL Database Manually](InitMysql.md)**  
 
 ### Configuration File
 - **[Configuration Item Description](ConfigurationItemDescription.md)**  

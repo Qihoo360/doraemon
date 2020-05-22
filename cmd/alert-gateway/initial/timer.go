@@ -65,13 +65,15 @@ func UpdateMaintainlist() {
 			m[name.Hostname] = true
 		}
 	}
-	res, _ := common.HttpGet(beego.AppConfig.String("BrokenUrl"), nil, map[string]string{"Authorization": "Bearer 8gi6UvoPJgIRcunHBWDHel4fCLQVn9"})
-	jsonDataFromHttp, _ := ioutil.ReadAll(res.Body)
-	//fmt.Println(string(jsonDataFromHttp))
-	brokenList := common.BrokenList{}
-	json.Unmarshal(jsonDataFromHttp, &brokenList)
-	for _, i := range brokenList.Hosts {
-		m[i.Hostname] = true
+	res, err := common.HttpGet(beego.AppConfig.String("BrokenUrl"), nil, map[string]string{"Authorization": "Bearer 8gi6UvoPJgIRcunHBWDHel4fCLQVn9"})
+	if err == nil {
+		jsonDataFromHttp, _ := ioutil.ReadAll(res.Body)
+		//fmt.Println(string(jsonDataFromHttp))
+		brokenList := common.BrokenList{}
+		json.Unmarshal(jsonDataFromHttp, &brokenList)
+		for _, i := range brokenList.Hosts {
+			m[i.Hostname] = true
+		}
 	}
 	common.Rw.Lock()
 	common.Maintain = m

@@ -22,6 +22,7 @@ Doraemon是一个基于 **[Prometheus](https://prometheus.io)** 的监控系统�
 ### 安装步骤
 - **[使用Docker-Compose部署](InstallByDocker-CN.md)**  
 - **[使用Kubernetes部署](InstallByK8s-CN.md)**  
+- **[手动初始化mysql数据库](InitMysq-CN.md)**  
 
 ### 配置文件
 - **[配置项说明](ConfigurationItemDescription-CN.md)**  

@@ -10,6 +10,7 @@ const regRouter = new Map([
   [/^\/strategy$/, 'strategy'],
   [/^\/alerts$/, 'alerts'],
   [/^\/alerts_confirm\/?[\d]+$/, 'alerts_confirm'],
+  [/^\/alerts_confirm$/, 'alerts_confirm'],
   [/^\/group$/, 'group'],
   [/^\/maintain$/, 'maintain'],
   [/^\/user$/, 'user'],

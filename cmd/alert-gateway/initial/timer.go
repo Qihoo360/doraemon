@@ -166,7 +166,7 @@ func Send2Hook(content []common.Ready2Send, now string, t string, url string) {
 					To:     i.User,
 					Alerts: i.Alerts,
 				})
-			common.HttpPost(url, nil, nil, data)
+			common.HttpPost(url, nil, common.GenerateJsonHeader(), data)
 		}
 	} else {
 		for _, i := range content {
@@ -186,7 +186,7 @@ func Send2Hook(content []common.Ready2Send, now string, t string, url string) {
 					To:          i.User,
 					Alerts:      i.Alerts,
 				})
-			common.HttpPost(url, nil, nil, data)
+			common.HttpPost(url, nil, common.GenerateJsonHeader(), data)
 		}
 	}
 }

@@ -119,6 +119,12 @@ type ValidUserGroup struct {
 	DutyGroup string
 }
 
+func GenerateJsonHeader() map[string]string {
+	return map[string]string {
+		"Content-Type": "application/json",
+	}
+}
+
 func HttpPost(url string, params map[string]string, headers map[string]string, body []byte) (*http.Response, error) {
 	//new request
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))

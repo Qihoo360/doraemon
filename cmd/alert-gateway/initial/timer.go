@@ -342,7 +342,7 @@ func Filter(alerts map[int64][]Record, maxCount map[int64]int) map[string][]comm
 											Id:       alert.Id,
 											Count:    alert.Count,
 											Value:    alert.Value,
-											Summary:  planId.Summary,
+											Summary:  alert.Summary,
 											Hostname: alert.Hostname,
 											Labels:   labelMap,
 										})

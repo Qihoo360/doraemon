@@ -486,7 +486,7 @@ func (u *Alerts) AlertsHandler(alert *common.Alert) {
 																			Id:       recoverInfo.Id,
 																			Count:    recoverInfo.Count,
 																			Value:    elemt.Value,
-																			Summary:  planId.Summary,
+																			Summary:  elemt.Annotations.Summary,
 																			Hostname: recoverInfo.Hostname,
 																		}},
 																	}}
@@ -504,7 +504,7 @@ func (u *Alerts) AlertsHandler(alert *common.Alert) {
 																				Id:       recoverInfo.Id,
 																				Count:    recoverInfo.Count,
 																				Value:    elemt.Value,
-																				Summary:  planId.Summary,
+																				Summary:  elemt.Annotations.Summary,
 																				Hostname: recoverInfo.Hostname,
 																			}},
 																		}
@@ -513,7 +513,7 @@ func (u *Alerts) AlertsHandler(alert *common.Alert) {
 																			Id:       recoverInfo.Id,
 																			Count:    recoverInfo.Count,
 																			Value:    elemt.Value,
-																			Summary:  planId.Summary,
+																			Summary:  elemt.Annotations.Summary,
 																			Hostname: recoverInfo.Hostname,
 																		})
 																	}

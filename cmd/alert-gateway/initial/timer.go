@@ -106,15 +106,11 @@ func SendAll(method string, from string, param map[string]string, content []comm
 		for _, i := range content {
 			msg := []string{"[故障:" + strconv.FormatInt(int64(len(i.Alerts)), 10) + "条] " + i.Alerts[0].Summary}
 			for _, j := range i.Alerts {
-				duration := ""
-				if j.Count >= 60 {
-					duration += strconv.FormatInt(int64(j.Count/60), 10) + "h" + strconv.FormatInt(int64(j.Count%60), 10) + "m"
-				} else {
-					duration = strconv.FormatInt(int64(j.Count), 10) + "m"
-				}
+				duration,_ := time.ParseDuration(strconv.FormatInt(int64(j.Count), 10) + "m")
+
 				id := strconv.FormatInt(j.Id, 10)
 				value := strconv.FormatFloat(j.Value, 'f', 2, 64)
-				msg = append(msg, "["+duration+"][ID:"+id+"] "+j.Hostname+" 当前值:"+value)
+				msg = append(msg, "["+duration.String()+"][ID:"+id+"] "+j.Hostname+" 当前值:"+value)
 			}
 			msg = append(msg, "[时间] "+now)
 			msg = append(msg, "[确认链接] "+beego.AppConfig.String("WebUrl")+"/alerts_confirm/"+strconv.FormatInt(i.RuleId, 10)+"?start="+strconv.FormatInt(i.Start, 10))
@@ -235,15 +231,11 @@ func SendRecover(url string, from string, param map[string]string, content []com
 	for _, i := range content {
 		msg := []string{"[故障恢复:" + strconv.FormatInt(int64(len(i.Alerts)), 10) + "条] " + i.Alerts[0].Summary}
 		for _, j := range i.Alerts {
-			duration := ""
-			if j.Count >= 60 {
-				duration += strconv.FormatInt(int64(j.Count/60), 10) + "h" + strconv.FormatInt(int64(j.Count%60), 10) + "m"
-			} else {
-				duration = strconv.FormatInt(int64(j.Count), 10) + "m"
-			}
+			duration,_ := time.ParseDuration(strconv.FormatInt(int64(j.Count), 10) + "m")
+
 			id := strconv.FormatInt(j.Id, 10)
 			value := strconv.FormatFloat(j.Value, 'f', 2, 64)
-			msg = append(msg, "["+duration+"][ID:"+id+"] "+j.Hostname+" 当前值:"+value)
+			msg = append(msg, "["+duration.String()+"][ID:"+id+"] "+j.Hostname+" 当前值:"+value)
 		}
 		msg = append(msg, "[时间] "+now)
 		data, _ := json.Marshal(common.Msg{

@@ -265,7 +265,7 @@ export default class Strategy extends Component {
         <div id="top-section">
           <Button type="primary" onClick={this.handleAdd}>添加</Button>
         </div>
-        <Table dataSource={dataSource} expandedRowRender={record => this.expandedRowRender(record)} columns={this.columns} rowKey="id" />
+        <Table dataSource={dataSource} expandedRowRender={record => this.expandedRowRender(record)} columns={columns} rowKey="id" />
         <CreateEditStrategy OnRef={c => this.onRefStr(c)} onSubmit={this.updateStrategy} />
         <CreateEditReceiver OnRef={c => this.onRefRec(c)} onSubmit={this.updateReceiver} />
       </div>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Button, Table, message, Popconfirm, Divider } from 'antd'
+import { Button, Table, message, Popconfirm, Divider, Input, Icon } from 'antd'
 import { getStrategy, addStrategy, updateStrategy, deleteStrategy, getReceiver, addReceiver, updateReceiver, deleteReceiver } from '@apis/strategy'
+import Highlighter from 'react-highlight-words'
 import CreateEditStrategy from './strategy/create-edit-strategy'
 import CreateEditReceiver from './strategy/create-edit-receiver'
 
@@ -8,12 +9,78 @@ export default class Strategy extends Component {
   state = {
     dataSource: [],
     expandData: {},
+    filterItem: {
+      description: false,
+      rule_labels: false,
+    },
   }
   currentRow = null
   componentDidMount() {
     this.getList()
     this.expandLoading = false
   }
+
+  getColumnSearchProps = dataIndex => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          ref={(node) => {
+            this.searchInput = node;
+          }}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onInput={(e) => { setSelectedKeys(e.target.value ? [e.target.value] : []); this.handleSearch(selectedKeys, confirm, dataIndex) }}
+          onBlur={() => this.setState(state => ({
+            filterItem: { ...state.filterItem, [dataIndex]: false },
+          }))}
+          style={{ width: 188, marginBottom: 8, display: 'block' }}
+        />
+      </div>
+    ),
+    filterIcon: filtered => (
+      <Icon type="search"
+        onMouseDown={() => {
+          this.setState(state => ({
+            filterItem: { ...state.filterItem, [dataIndex]: true },
+          })); setTimeout(() => this.searchInput.focus());
+        }}
+        style={{ color: filtered ? '#1890ff' : undefined }}
+      />
+    ),
+    onFilter: (value, record) => {
+      let content
+      content = record[dataIndex]
+      return content
+        .toString()
+        .toLowerCase()
+        .includes(value.toLowerCase())
+    },
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        setTimeout(() => this.searchInput.focus());
+      }
+    },
+    render: text =>
+      (this.state.searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          searchWords={[this.state.searchText]}
+          autoEscape
+          textToHighlight={text.toString()}
+        />
+      ) : (
+          text
+        )),
+  })
+
+  handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    this.setState({
+      searchText: selectedKeys[0],
+      searchedColumn: dataIndex,
+    });
+  }
+
   getList() {
     getStrategy({}, (data) => {
       const obj = {}
@@ -42,32 +109,7 @@ export default class Strategy extends Component {
       this.expandLoading = false
     })
   }
-  columns = [
-    {
-      title: '编号', align: 'center', dataIndex: 'id', key: 'id', sorter: (a, b) => a.id - b.id,
-    },
-    { title: '名称', align: 'center', dataIndex: 'description', key: 'description' },
-    { title: '描述', align: 'center', dataIndex: 'rule_labels', key: 'rule_labels' },
-    {
-      title: '操作',
-      align: 'center',
-      key: 'action',
-      render: (text, record, index) => (
-        <span>
-          <a onClick={() => this.handleEdit(record)}>编辑</a>
-          <Divider type="vertical" />
-          <Popconfirm
-            title="确定要删除吗?"
-            onConfirm={() => this.handleDelete(record)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <a href="#">删除</a>
-          </Popconfirm>
-        </span>
-      ),
-    },
-  ]
+
   handleAdd = () => {
     this.createEditStrategy.updateValue()
   }
@@ -178,6 +220,46 @@ export default class Strategy extends Component {
   }
   render() {
     const { dataSource } = this.state
+    const columns = [
+      {
+        title: '编号', align: 'center', dataIndex: 'id', key: 'id', sorter: (a, b) => a.id - b.id,
+      },
+      {
+        title: '名称',
+        align: 'center',
+        dataIndex: 'description',
+        key: 'description',
+        ...this.getColumnSearchProps('description'),
+        filterDropdownVisible: this.state.filterItem.description,
+      },
+      {
+        title: '描述',
+        align: 'center',
+        dataIndex: 'rule_labels',
+        key: 'rule_labels',
+        ...this.getColumnSearchProps('rule_labels'),
+        filterDropdownVisible: this.state.filterItem.rule_labels,
+      },
+      {
+        title: '操作',
+        align: 'center',
+        key: 'action',
+        render: (text, record, index) => (
+          <span>
+            <a onClick={() => this.handleEdit(record)}>编辑</a>
+            <Divider type="vertical" />
+            <Popconfirm
+              title="确定要删除吗?"
+              onConfirm={() => this.handleDelete(record)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <a href="#">删除</a>
+            </Popconfirm>
+          </span>
+        ),
+      },
+    ]
     return (
       <div>
         <div id="top-section">

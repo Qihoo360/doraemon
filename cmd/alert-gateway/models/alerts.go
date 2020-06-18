@@ -488,6 +488,7 @@ func (u *Alerts) AlertsHandler(alert *common.Alert) {
 																			Value:    elemt.Value,
 																			Summary:  elemt.Annotations.Summary,
 																			Hostname: recoverInfo.Hostname,
+																			Labels:   elemt.Labels,
 																		}},
 																	}}
 																} else {
@@ -506,6 +507,7 @@ func (u *Alerts) AlertsHandler(alert *common.Alert) {
 																				Value:    elemt.Value,
 																				Summary:  elemt.Annotations.Summary,
 																				Hostname: recoverInfo.Hostname,
+																				Labels:   elemt.Labels,
 																			}},
 																		}
 																	} else {
@@ -515,6 +517,7 @@ func (u *Alerts) AlertsHandler(alert *common.Alert) {
 																			Value:    elemt.Value,
 																			Summary:  elemt.Annotations.Summary,
 																			Hostname: recoverInfo.Hostname,
+																			Labels:   elemt.Labels,
 																		})
 																	}
 																}

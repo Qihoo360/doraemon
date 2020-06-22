@@ -50,7 +50,7 @@ The whole system adopts the separation of front and back ends, in which the fron
     $ docker-compose up -d
     ```
 
-    With the above command, you can access the Doraemon from http://hostip:32000.The default username is "admin",and the password is "123456".  
+    With the above command, you can access the Doraemon from http://hostip:32000. The default username is "admin",and the password is "123456".  
 
 ## Instructions  
 **[Wiki](docs/readme.md)**  

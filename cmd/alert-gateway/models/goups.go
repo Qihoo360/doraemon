@@ -62,11 +62,13 @@ func SendAlertsFor(VUG *common.ValidUserGroup) []string {
 		userList = strings.Split(VUG.User, ",")
 	}
 	if VUG.Group != "" {
-		var g Groups
-		_ = Ormer().
-			QueryTable(g.TableName()).
-			Filter("name__in", strings.Split(VUG.Group, ",")).One(&g, "user")
-		userList = append(userList, strings.Split(g.User, ",")...)
+		var groups []*Groups
+		_, _ = Ormer().
+			QueryTable("group").
+			Filter("name__in", strings.Split(VUG.Group, ",")).All(&groups, "user")
+		for _, v := range groups {
+			userList = append(userList, strings.Split(v.User, ",")...)
+		}
 	}
 	if VUG.DutyGroup != "" {
 		date := time.Now().Format("2006-1-2")

@@ -62,12 +62,12 @@ func SendAlertsFor(VUG *common.ValidUserGroup) []string {
 		userList = strings.Split(VUG.User, ",")
 	}
 	if VUG.Group != "" {
-		var members struct {
-			User string
-		}
-		for _, i := range strings.Split(VUG.Group, ",") {
-			Ormer().Raw("SELECT user FROM `group` WHERE name=?", i).QueryRow(&members)
-			userList = append(userList, strings.Split(members.User, ",")...)
+		var groups []*Groups
+		_, _ = Ormer().
+			QueryTable("group").
+			Filter("name__in", strings.Split(VUG.Group, ",")).All(&groups, "user")
+		for _, v := range groups {
+			userList = append(userList, strings.Split(v.User, ",")...)
 		}
 	}
 	if VUG.DutyGroup != "" {

@@ -71,6 +71,14 @@ func ensureDatabase() error {
 		}
 	}
 
+	// database created, maybe by DBA, but tables not created yet
+	if !needInit {
+		sql := fmt.Sprintf("show tables from %s;", dbName)
+		if rows, err := db.Query(sql); err == nil && !rows.Next() {
+			needInit = true
+		}
+	}
+
 	logs.Debug("Initialize database connection: %s", strings.Replace(dbURL, beego.AppConfig.String("DBPasswd"), "****", 1))
 
 	err = orm.RegisterDataBase("default", "mysql", addLocation(fmt.Sprintf("%s%s", dbURL, dbName)))

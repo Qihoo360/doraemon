@@ -83,5 +83,13 @@ func SendAlertsFor(VUG *common.ValidUserGroup) []string {
 			}
 		}
 	}
-	return userList
+	hashMap := map[string]bool{}
+	for _, name := range userList {
+		hashMap[name] = true
+	}
+	res := []string{}
+	for key := range hashMap {
+		res = append(res, key)
+	}
+	return res
 }

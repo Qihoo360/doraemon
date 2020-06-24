@@ -26,19 +26,34 @@ To create a alarm strategy,we must choose the alarm period,fill in the alarm del
                 "count": 14645,                                                  
                 "value": 76.58,                                             
                 "summary": "map_req",                                        
-                "hostname": "10.0.0.1"                                 
+                "hostname": "10.0.0.1",
+                "labels":{
+                    "app":"sony",
+                    "idc":"beijing",
+                    "module":"doraemon"
+                }
             }, {
                 "id": 67803,
                 "count": 13,
                 "value": 74.75,
                 "summary": "map_req",
-                "hostname": "10.0.0.2"
+                "hostname": "10.0.0.2",
+                "labels":{
+                    "app":"bison",
+                    "idc":"shanghai",
+                    "module":"doraemon"
+                }
             }, {
                 "id": 67806,
                 "count": 12,
                 "value": 81.83,
                 "summary": "map_req",
-                "hostname": "10.0.0.3"
+                "hostname": "10.0.0.3",
+                "labels":{
+                    "app":"one",
+                    "idc":"guangzhou",
+                    "module":"doraemon"
+                }
             }]
         }
         ```  
@@ -54,19 +69,34 @@ To create a alarm strategy,we must choose the alarm period,fill in the alarm del
                 "count": 14645,                                                  
                 "value": 76.58,                                             
                 "summary": "map_req",                                        
-                "hostname": "10.0.0.1"                                 
+                "hostname": "10.0.0.1",
+                "labels":{
+                    "app":"sony",
+                    "idc":"beijing",
+                    "module":"doraemon"
+                }
             }, {
                 "id": 67803,
                 "count": 13,
                 "value": 74.75,
                 "summary": "map_req",
-                "hostname": "10.0.0.2"
+                "hostname": "10.0.0.2",
+                "labels":{
+                    "app":"bison",
+                    "idc":"shanghai",
+                    "module":"doraemon"
+                }
             }, {
                 "id": 67806,
                 "count": 12,
                 "value": 81.83,
                 "summary": "map_req",
-                "hostname": "10.0.0.3"
+                "hostname": "10.0.0.3",
+                "labels":{
+                    "app":"one",
+                    "idc":"guangzhou",
+                    "module":"doraemon"
+                }
             }]
         }
         ```  

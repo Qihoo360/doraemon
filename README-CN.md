@@ -48,7 +48,7 @@ Doraemon是一个基于 **[Prometheus](https://prometheus.io)** 的监控系统�
     $ cd deployments/docker-compose/
     $ docker-compose up -d
     ```  
-    通过上述命令，您可以从通过 http://本机ip:32000 访问Doraemon。
+    通过上述命令，您可以从通过 http://本机ip:32000 访问Doraemon。默认登录用户admin，密码是123456。
 
 ## 文档  
 **[Wiki](docs/readme-CN.md)**  

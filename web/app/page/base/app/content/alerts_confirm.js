@@ -196,8 +196,8 @@ export default class AlertsConfirm extends Component {
         title: '当前状态',
         align: 'center',
         dataIndex: 'status',
-        filters: [{ text: '报警', value: 2 }, { text: '恢复', value: 0 }],
-        onFilter: (value, record) => record.status === value,
+        // filters: [{ text: '报警', value: 2 }, { text: '恢复', value: 0 }],
+        // onFilter: (value, record) => record.status === value,
         render: status => (
           <span>{status === 2 ? '报警' : '恢复'}</span>
         ),

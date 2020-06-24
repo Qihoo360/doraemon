@@ -106,7 +106,7 @@ func SendAll(method string, from string, param map[string]string, content []comm
 		for _, i := range content {
 			msg := []string{"[故障:" + strconv.FormatInt(int64(len(i.Alerts)), 10) + "条] " + i.Alerts[0].Summary}
 			for _, j := range i.Alerts {
-				duration,_ := time.ParseDuration(strconv.FormatInt(int64(j.Count), 10) + "m")
+				duration, _ := time.ParseDuration(strconv.FormatInt(int64(j.Count), 10) + "m")
 
 				id := strconv.FormatInt(j.Id, 10)
 				value := strconv.FormatFloat(j.Value, 'f', 2, 64)
@@ -231,7 +231,7 @@ func SendRecover(url string, from string, param map[string]string, content []com
 	for _, i := range content {
 		msg := []string{"[故障恢复:" + strconv.FormatInt(int64(len(i.Alerts)), 10) + "条] " + i.Alerts[0].Summary}
 		for _, j := range i.Alerts {
-			duration,_ := time.ParseDuration(strconv.FormatInt(int64(j.Count), 10) + "m")
+			duration, _ := time.ParseDuration(strconv.FormatInt(int64(j.Count), 10) + "m")
 
 			id := strconv.FormatInt(j.Id, 10)
 			value := strconv.FormatFloat(j.Value, 'f', 2, 64)
@@ -256,8 +256,6 @@ func Filter(alerts map[int64][]Record, maxCount map[int64]int) map[string][]comm
 	}
 	Cache := map[int64][]common.UserGroup{}
 	NewRuleCount := map[[2]int64]int64{}
-	datetime := time.Now()
-	now := datetime.Format("15:04")
 	for key := range alerts {
 		var usergroupList []common.UserGroup
 		var planId struct {
@@ -271,76 +269,19 @@ func Filter(alerts map[int64][]Record, maxCount map[int64]int) map[string][]comm
 			Cache[planId.PlanId] = usergroupList
 		}
 		for _, element := range Cache[planId.PlanId] {
-			if element.User != "" || element.DutyGroup != "" || element.Group != "" {
-				if (element.StartTime <= element.EndTime && element.StartTime <= now && element.EndTime >= now) || (element.StartTime > element.EndTime && (element.StartTime <= now || now <= element.EndTime)) {
-					if maxCount[key] >= element.Start {
-						if _, ok := common.RuleCount[[2]int64{key, int64(element.Start)}]; !ok {
-							NewRuleCount[[2]int64{key, int64(element.Start)}] = -1
-						} else {
-							NewRuleCount[[2]int64{key, int64(element.Start)}] = common.RuleCount[[2]int64{key, int64(element.Start)}]
-						}
-						NewRuleCount[[2]int64{key, int64(element.Start)}] += 1
+			if element.IsValid() && element.IsOnDuty() {
+				if maxCount[key] >= element.Start {
+					if _, ok := common.RuleCount[[2]int64{key, int64(element.Start)}]; !ok {
+						NewRuleCount[[2]int64{key, int64(element.Start)}] = -1
+					} else {
+						NewRuleCount[[2]int64{key, int64(element.Start)}] = common.RuleCount[[2]int64{key, int64(element.Start)}]
+					}
+					NewRuleCount[[2]int64{key, int64(element.Start)}] += 1
 
-						if NewRuleCount[[2]int64{key, int64(element.Start)}]%int64(element.Period) == 0 {
-							if _, ok := AlertsMap[element.Start]; !ok {
-								AlertsMap[element.Start] = []common.SingleAlert{}
-							} else {
-								if len(AlertsMap[element.Start]) > 0 {
-									if element.ReversePolishNotation == "" {
-										SendClass[element.Method] = append(SendClass[element.Method], common.Ready2Send{
-											RuleId: key,
-											Start:  element.Id,
-											User: models.SendAlertsFor(&common.ValidUserGroup{
-												User:      element.User,
-												Group:     element.Group,
-												DutyGroup: element.DutyGroup,
-											}),
-											Alerts: AlertsMap[element.Start],
-										})
-									} else {
-										filteredAlerts := []common.SingleAlert{}
-										for _, alert := range AlertsMap[element.Start] {
-											if common.CalculateReversePolishNotation(alert.Labels, element.ReversePolishNotation) {
-												filteredAlerts = append(filteredAlerts, alert)
-											}
-										}
-										if len(filteredAlerts) > 0 {
-											SendClass[element.Method] = append(SendClass[element.Method], common.Ready2Send{
-												RuleId: key,
-												Start:  element.Id,
-												User: models.SendAlertsFor(&common.ValidUserGroup{
-													User:      element.User,
-													Group:     element.Group,
-													DutyGroup: element.DutyGroup,
-												}),
-												Alerts: filteredAlerts,
-											})
-										}
-									}
-								}
-								continue
-							}
-							for _, alert := range alerts[key] {
-								if alert.Count >= element.Start {
-									if _, ok := common.Maintain[alert.Hostname]; !ok {
-										labelMap := map[string]string{}
-										if alert.Labels != "" {
-											for _, j := range strings.Split(alert.Labels, "\v") {
-												kv := strings.Split(j, "\a")
-												labelMap[kv[0]] = kv[1]
-											}
-										}
-										AlertsMap[element.Start] = append(AlertsMap[element.Start], common.SingleAlert{
-											Id:       alert.Id,
-											Count:    alert.Count,
-											Value:    alert.Value,
-											Summary:  alert.Summary,
-											Hostname: alert.Hostname,
-											Labels:   labelMap,
-										})
-									}
-								}
-							}
+					if NewRuleCount[[2]int64{key, int64(element.Start)}]%int64(element.Period) == 0 {
+						if _, ok := AlertsMap[element.Start]; !ok {
+							AlertsMap[element.Start] = []common.SingleAlert{}
+						} else {
 							if len(AlertsMap[element.Start]) > 0 {
 								if element.ReversePolishNotation == "" {
 									SendClass[element.Method] = append(SendClass[element.Method], common.Ready2Send{
@@ -372,6 +313,61 @@ func Filter(alerts map[int64][]Record, maxCount map[int64]int) map[string][]comm
 											Alerts: filteredAlerts,
 										})
 									}
+								}
+							}
+							continue
+						}
+						for _, alert := range alerts[key] {
+							if alert.Count >= element.Start {
+								if _, ok := common.Maintain[alert.Hostname]; !ok {
+									labelMap := map[string]string{}
+									if alert.Labels != "" {
+										for _, j := range strings.Split(alert.Labels, "\v") {
+											kv := strings.Split(j, "\a")
+											labelMap[kv[0]] = kv[1]
+										}
+									}
+									AlertsMap[element.Start] = append(AlertsMap[element.Start], common.SingleAlert{
+										Id:       alert.Id,
+										Count:    alert.Count,
+										Value:    alert.Value,
+										Summary:  alert.Summary,
+										Hostname: alert.Hostname,
+										Labels:   labelMap,
+									})
+								}
+							}
+						}
+						if len(AlertsMap[element.Start]) > 0 {
+							if element.ReversePolishNotation == "" {
+								SendClass[element.Method] = append(SendClass[element.Method], common.Ready2Send{
+									RuleId: key,
+									Start:  element.Id,
+									User: models.SendAlertsFor(&common.ValidUserGroup{
+										User:      element.User,
+										Group:     element.Group,
+										DutyGroup: element.DutyGroup,
+									}),
+									Alerts: AlertsMap[element.Start],
+								})
+							} else {
+								filteredAlerts := []common.SingleAlert{}
+								for _, alert := range AlertsMap[element.Start] {
+									if common.CalculateReversePolishNotation(alert.Labels, element.ReversePolishNotation) {
+										filteredAlerts = append(filteredAlerts, alert)
+									}
+								}
+								if len(filteredAlerts) > 0 {
+									SendClass[element.Method] = append(SendClass[element.Method], common.Ready2Send{
+										RuleId: key,
+										Start:  element.Id,
+										User: models.SendAlertsFor(&common.ValidUserGroup{
+											User:      element.User,
+											Group:     element.Group,
+											DutyGroup: element.DutyGroup,
+										}),
+										Alerts: filteredAlerts,
+									})
 								}
 							}
 						}

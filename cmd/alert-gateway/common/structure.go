@@ -75,6 +75,24 @@ type UserGroup struct {
 	Method                string
 }
 
+/*
+ Check if UserGroup is valid.
+*/
+func (u UserGroup) IsValid() bool {
+	return u.User != "" || u.DutyGroup != "" || u.Group != ""
+}
+
+/*
+ IsOnDuty return if current UserGroup is on duty or not by StartTime & EndTime.
+ If the UserGroup is not on duty, alerts should not be sent to them.
+*/
+func (u UserGroup) IsOnDuty() bool {
+	now := time.Now().Format("15:04")
+
+	return (u.StartTime <= u.EndTime && u.StartTime <= now && u.EndTime >= now) || // 不跨 00:00
+		(u.StartTime > u.EndTime && (u.StartTime <= now || now <= u.EndTime)) // // 跨 00:00
+}
+
 type Alert []struct {
 	ActiveAt    time.Time `json:"active_at"`
 	Annotations struct {
@@ -120,7 +138,7 @@ type ValidUserGroup struct {
 }
 
 func GenerateJsonHeader() map[string]string {
-	return map[string]string {
+	return map[string]string{
 		"Content-Type": "application/json",
 	}
 }

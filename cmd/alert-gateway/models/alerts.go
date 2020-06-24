@@ -61,93 +61,93 @@ func (*Alerts) TableName() string {
 //	}
 //}
 
+type record struct {
+	Id              int64
+	RuleId          int64
+	Labels          string
+	Value           float64
+	Count           int
+	Status          int8
+	Summary         string
+	Description     string
+	ConfirmedBy     string
+	FiredAt         *time.Time
+	ConfirmedAt     *time.Time
+	ConfirmedBefore *time.Time
+	ResolvedAt      *time.Time
+}
+
+func (r record) toOneAlert() OneAlert {
+	return OneAlert{
+		ID:              r.Id,
+		RuleID:          r.RuleId,
+		Value:           r.Value,
+		Status:          r.Status,
+		Count:           r.Count,
+		Summary:         r.Summary,
+		Description:     r.Description,
+		ConfirmedBy:     r.ConfirmedBy,
+		FiredAt:         r.FiredAt,
+		ConfirmedAt:     r.ConfirmedAt,
+		ConfirmedBefore: r.ConfirmedBefore,
+		ResolvedAt:      r.ResolvedAt,
+	}
+}
+
+func (r record) getLabelMap() map[string]string {
+	label := map[string]string{}
+	if r.Labels != "" {
+		for _, e := range strings.Split(r.Labels, "\v") {
+			kv := strings.Split(e, "\a")
+			label[kv[0]] = kv[1]
+		}
+	}
+	return label
+}
+
+func (r record) toAlertForShow() common.AlertForShow {
+
+	return common.AlertForShow{
+		Id:              r.Id,
+		RuleId:          r.RuleId,
+		Labels:          r.getLabelMap(),
+		Value:           r.Value,
+		Count:           r.Count,
+		Status:          r.Status,
+		Summary:         r.Summary,
+		Description:     r.Description,
+		ConfirmedBy:     r.ConfirmedBy,
+		FiredAt:         r.FiredAt,
+		ConfirmedAt:     r.ConfirmedAt,
+		ConfirmedBefore: r.ConfirmedBefore,
+		ResolvedAt:      r.ResolvedAt,
+	}
+}
+
 func (u *Alerts) ClassifyAlerts() map[string]map[string][]OneAlert {
-	records := []struct {
-		Id              int64
-		RuleId          int64
-		Labels          string
-		Value           float64
-		Status          int8
-		Count           int
-		Summary         string
-		Description     string
-		ConfirmedBy     string
-		FiredAt         *time.Time
-		ConfirmedAt     *time.Time
-		ConfirmedBefore *time.Time
-		ResolvedAt      *time.Time
-	}{}
-	Ormer().Raw("SELECT id,rule_id,labels,value,status,count,summary,description,confirmed_by,fired_at,confirmed_at,confirmed_before,resolved_at FROM alert WHERE status=2 AND count!=-1").QueryRows(&records)
+	var records []record
+
+	Ormer().
+		Raw("SELECT id,rule_id,labels,value,status,count,summary,description,confirmed_by,fired_at,confirmed_at,confirmed_before,resolved_at FROM alert WHERE status=2 AND count!=-1").
+		QueryRows(&records)
 	res := map[string]map[string][]OneAlert{}
 	for _, i := range records {
 		if i.Labels != "" {
 			for _, j := range strings.Split(i.Labels, "\v") {
 				kv := strings.Split(j, "\a")
 				if _, ok := res[kv[0]]; ok {
-					res[kv[0]][kv[1]] = append(res[kv[0]][kv[1]], OneAlert{
-						ID:              i.Id,
-						RuleID:          i.RuleId,
-						Value:           i.Value,
-						Status:          i.Status,
-						Count:           i.Count,
-						Summary:         i.Summary,
-						Description:     i.Description,
-						ConfirmedBy:     i.ConfirmedBy,
-						FiredAt:         i.FiredAt,
-						ConfirmedAt:     i.ConfirmedAt,
-						ConfirmedBefore: i.ConfirmedBefore,
-						ResolvedAt:      i.ResolvedAt,
-					})
+					res[kv[0]][kv[1]] = append(res[kv[0]][kv[1]], i.toOneAlert())
 				} else {
 					res[kv[0]] = map[string][]OneAlert{}
-					res[kv[0]][kv[1]] = append(res[kv[0]][kv[1]], OneAlert{
-						ID:              i.Id,
-						RuleID:          i.RuleId,
-						Value:           i.Value,
-						Status:          i.Status,
-						Count:           i.Count,
-						Summary:         i.Summary,
-						Description:     i.Description,
-						ConfirmedBy:     i.ConfirmedBy,
-						FiredAt:         i.FiredAt,
-						ConfirmedAt:     i.ConfirmedAt,
-						ConfirmedBefore: i.ConfirmedBefore,
-						ResolvedAt:      i.ResolvedAt,
-					})
+					res[kv[0]][kv[1]] = append(res[kv[0]][kv[1]], i.toOneAlert())
 				}
 			}
 		} else {
 			if _, ok := res["no label"]; ok {
-				res["no label"]["no label"] = append(res["no label"]["no label"], OneAlert{
-					ID:              i.Id,
-					RuleID:          i.RuleId,
-					Value:           i.Value,
-					Status:          i.Status,
-					Count:           i.Count,
-					Summary:         i.Summary,
-					Description:     i.Description,
-					ConfirmedBy:     i.ConfirmedBy,
-					FiredAt:         i.FiredAt,
-					ConfirmedAt:     i.ConfirmedAt,
-					ConfirmedBefore: i.ConfirmedBefore,
-					ResolvedAt:      i.ResolvedAt,
-				})
+				res["no label"]["no label"] = append(res["no label"]["no label"], i.toOneAlert())
 			} else {
 				res["no label"] = map[string][]OneAlert{}
-				res["no label"]["no label"] = append(res["no label"]["no label"], OneAlert{
-					ID:              i.Id,
-					RuleID:          i.RuleId,
-					Value:           i.Value,
-					Status:          i.Status,
-					Count:           i.Count,
-					Summary:         i.Summary,
-					Description:     i.Description,
-					ConfirmedBy:     i.ConfirmedBy,
-					FiredAt:         i.FiredAt,
-					ConfirmedAt:     i.ConfirmedAt,
-					ConfirmedBefore: i.ConfirmedBefore,
-					ResolvedAt:      i.ResolvedAt,
-				})
+				res["no label"]["no label"] = append(res["no label"]["no label"], i.toOneAlert())
 			}
 		}
 	}
@@ -157,21 +157,7 @@ func (u *Alerts) ClassifyAlerts() map[string]map[string][]OneAlert {
 func (u *Alerts) GetAlerts(pageNo int64, pageSize int64, timeStart string, timeEnd string, status string, summary string) ShowAlerts {
 	var showAlerts ShowAlerts
 	showAlerts.Alerts = []common.AlertForShow{}
-	records := []struct {
-		Id              int64
-		RuleId          int64
-		Labels          string
-		Value           float64
-		Count           int
-		Status          int8
-		Summary         string
-		Description     string
-		ConfirmedBy     string
-		FiredAt         *time.Time
-		ConfirmedAt     *time.Time
-		ConfirmedBefore *time.Time
-		ResolvedAt      *time.Time
-	}{}
+	var records []record
 
 	if summary != "" {
 		if status != "" {
@@ -244,28 +230,7 @@ func (u *Alerts) GetAlerts(pageNo int64, pageSize int64, timeStart string, timeE
 	}
 
 	for _, i := range records {
-		label := map[string]string{}
-		if i.Labels != "" {
-			for _, j := range strings.Split(i.Labels, "\v") {
-				kv := strings.Split(j, "\a")
-				label[kv[0]] = kv[1]
-			}
-		}
-		showAlerts.Alerts = append(showAlerts.Alerts, common.AlertForShow{
-			Id:              i.Id,
-			RuleId:          i.RuleId,
-			Labels:          label,
-			Value:           i.Value,
-			Count:           i.Count,
-			Status:          i.Status,
-			Summary:         i.Summary,
-			Description:     i.Description,
-			ConfirmedBy:     i.ConfirmedBy,
-			FiredAt:         i.FiredAt,
-			ConfirmedAt:     i.ConfirmedAt,
-			ConfirmedBefore: i.ConfirmedBefore,
-			ResolvedAt:      i.ResolvedAt,
-		})
+		showAlerts.Alerts = append(showAlerts.Alerts, i.toAlertForShow())
 	}
 	//showalerts.Total, _ = Ormer().QueryTable(Alerts{}).Limit(-1).Count()
 	return showAlerts
@@ -274,21 +239,7 @@ func (u *Alerts) GetAlerts(pageNo int64, pageSize int64, timeStart string, timeE
 func (u *Alerts) ShowAlerts(ruleId string, start string, pageNo int64, pageSize int64) ShowAlerts {
 	var showAlerts ShowAlerts
 	showAlerts.Alerts = []common.AlertForShow{}
-	records := []struct {
-		Id              int64
-		RuleId          int64
-		Labels          string
-		Value           float64
-		Count           int
-		Status          int8
-		Summary         string
-		Description     string
-		ConfirmedBy     string
-		FiredAt         *time.Time
-		ConfirmedAt     *time.Time
-		ConfirmedBefore *time.Time
-		ResolvedAt      *time.Time
-	}{}
+	var records []record
 	strategy := struct {
 		ReversePolishNotation string
 		Start                 int
@@ -298,47 +249,13 @@ func (u *Alerts) ShowAlerts(ruleId string, start string, pageNo int64, pageSize 
 	}
 	_, _ = Ormer().Raw("SELECT id,rule_id,labels,value,count,status,summary,description,confirmed_by,fired_at,confirmed_at,confirmed_before,resolved_at FROM alert WHERE count>=? AND rule_id=? AND status!=0 ORDER BY status DESC,id DESC", strategy.Start, ruleId).QueryRows(&records)
 	for _, i := range records {
-		label := map[string]string{}
-		if i.Labels != "" {
-			for _, j := range strings.Split(i.Labels, "\v") {
-				kv := strings.Split(j, "\a")
-				label[kv[0]] = kv[1]
-			}
-		}
+		label := i.getLabelMap()
 		if strategy.ReversePolishNotation != "" {
 			if common.CalculateReversePolishNotation(label, strategy.ReversePolishNotation) {
-				showAlerts.Alerts = append(showAlerts.Alerts, common.AlertForShow{
-					Id:              i.Id,
-					RuleId:          i.RuleId,
-					Labels:          label,
-					Value:           i.Value,
-					Count:           i.Count,
-					Status:          i.Status,
-					Summary:         i.Summary,
-					Description:     i.Description,
-					ConfirmedBy:     i.ConfirmedBy,
-					FiredAt:         i.FiredAt,
-					ConfirmedAt:     i.ConfirmedAt,
-					ConfirmedBefore: i.ConfirmedBefore,
-					ResolvedAt:      i.ResolvedAt,
-				})
+				showAlerts.Alerts = append(showAlerts.Alerts, i.toAlertForShow())
 			}
 		} else {
-			showAlerts.Alerts = append(showAlerts.Alerts, common.AlertForShow{
-				Id:              i.Id,
-				RuleId:          i.RuleId,
-				Labels:          label,
-				Value:           i.Value,
-				Count:           i.Count,
-				Status:          i.Status,
-				Summary:         i.Summary,
-				Description:     i.Description,
-				ConfirmedBy:     i.ConfirmedBy,
-				FiredAt:         i.FiredAt,
-				ConfirmedAt:     i.ConfirmedAt,
-				ConfirmedBefore: i.ConfirmedBefore,
-				ResolvedAt:      i.ResolvedAt,
-			})
+			showAlerts.Alerts = append(showAlerts.Alerts, i.toAlertForShow())
 		}
 	}
 	showAlerts.Total = int64(len(showAlerts.Alerts))
@@ -453,28 +370,45 @@ func (u *Alerts) AlertsHandler(alert *common.Alert) {
 											Cache[planId.PlanId] = userGroupList
 										}
 										for _, element := range Cache[planId.PlanId] {
-											if element.User != "" || element.DutyGroup != "" || element.Group != "" {
-												if (element.StartTime <= element.EndTime && element.StartTime <= now && element.EndTime >= now) || (element.StartTime > element.EndTime && (element.StartTime <= now || now <= element.EndTime)) {
-													if recoverInfo.Count >= element.Start {
-														sendFlag := false
-														if recoverInfo.Count-element.Start >= element.Period {
-															sendFlag = true
-														} else {
-															if _, ok := common.RuleCount[[2]int64{ruleid, int64(element.Start)}]; ok {
-																logs.Panic.Debug("[%s] id:%d,rulecount:%d,count:%d,start:%d,period:%d", now, recoverInfo.Id, common.RuleCount[[2]int64{ruleid, int64(element.Start)}], recoverInfo.Count, element.Start, element.Period)
-																if common.RuleCount[[2]int64{ruleid, int64(element.Start)}] >= int64(recoverInfo.Count-element.Start) {
-																	logs.Panic.Debug("[%s] id:%d %d,%s", now, recoverInfo.Id, (common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))%int64(element.Period), common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-((common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))/int64(element.Period))*int64(element.Period) >= int64(element.Period))
-																	if (common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))%int64(element.Period) == 0 || common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-((common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))/int64(element.Period))*int64(element.Period) >= int64(element.Period) {
-																		sendFlag = true
-																	}
+											if element.IsValid() && element.IsOnDuty() {
+												if recoverInfo.Count >= element.Start {
+													sendFlag := false
+													if recoverInfo.Count-element.Start >= element.Period {
+														sendFlag = true
+													} else {
+														if _, ok := common.RuleCount[[2]int64{ruleid, int64(element.Start)}]; ok {
+															logs.Panic.Debug("[%s] id:%d,rulecount:%d,count:%d,start:%d,period:%d", now, recoverInfo.Id, common.RuleCount[[2]int64{ruleid, int64(element.Start)}], recoverInfo.Count, element.Start, element.Period)
+															if common.RuleCount[[2]int64{ruleid, int64(element.Start)}] >= int64(recoverInfo.Count-element.Start) {
+																logs.Panic.Debug("[%s] id:%d %d,%s", now, recoverInfo.Id, (common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))%int64(element.Period), common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-((common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))/int64(element.Period))*int64(element.Period) >= int64(element.Period))
+																if (common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))%int64(element.Period) == 0 || common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-((common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))/int64(element.Period))*int64(element.Period) >= int64(element.Period) {
+																	sendFlag = true
 																}
 															}
 														}
-														if sendFlag {
-															if element.ReversePolishNotation == "" || common.CalculateReversePolishNotation(elemt.Labels, element.ReversePolishNotation) {
-																common.Lock.Lock()
-																if _, ok := common.Recover2Send[element.Method]; !ok {
-																	common.Recover2Send[element.Method] = map[[2]int64]*common.Ready2Send{[2]int64{ruleid, element.Id}: &common.Ready2Send{
+													}
+													if sendFlag {
+														if element.ReversePolishNotation == "" || common.CalculateReversePolishNotation(elemt.Labels, element.ReversePolishNotation) {
+															common.Lock.Lock()
+															if _, ok := common.Recover2Send[element.Method]; !ok {
+																common.Recover2Send[element.Method] = map[[2]int64]*common.Ready2Send{[2]int64{ruleid, element.Id}: &common.Ready2Send{
+																	RuleId: ruleid,
+																	Start:  element.Id,
+																	User: SendAlertsFor(&common.ValidUserGroup{
+																		User:      element.User,
+																		Group:     element.Group,
+																		DutyGroup: element.DutyGroup,
+																	}),
+																	Alerts: []common.SingleAlert{common.SingleAlert{
+																		Id:       recoverInfo.Id,
+																		Count:    recoverInfo.Count,
+																		Value:    elemt.Value,
+																		Summary:  elemt.Annotations.Summary,
+																		Hostname: recoverInfo.Hostname,
+																	}},
+																}}
+															} else {
+																if _, ok := common.Recover2Send[element.Method][[2]int64{ruleid, element.Id}]; !ok {
+																	common.Recover2Send[element.Method][[2]int64{ruleid, element.Id}] = &common.Ready2Send{
 																		RuleId: ruleid,
 																		Start:  element.Id,
 																		User: SendAlertsFor(&common.ValidUserGroup{
@@ -490,40 +424,19 @@ func (u *Alerts) AlertsHandler(alert *common.Alert) {
 																			Hostname: recoverInfo.Hostname,
 																			Labels:   elemt.Labels,
 																		}},
-																	}}
-																} else {
-																	if _, ok := common.Recover2Send[element.Method][[2]int64{ruleid, element.Id}]; !ok {
-																		common.Recover2Send[element.Method][[2]int64{ruleid, element.Id}] = &common.Ready2Send{
-																			RuleId: ruleid,
-																			Start:  element.Id,
-																			User: SendAlertsFor(&common.ValidUserGroup{
-																				User:      element.User,
-																				Group:     element.Group,
-																				DutyGroup: element.DutyGroup,
-																			}),
-																			Alerts: []common.SingleAlert{common.SingleAlert{
-																				Id:       recoverInfo.Id,
-																				Count:    recoverInfo.Count,
-																				Value:    elemt.Value,
-																				Summary:  elemt.Annotations.Summary,
-																				Hostname: recoverInfo.Hostname,
-																				Labels:   elemt.Labels,
-																			}},
-																		}
-																	} else {
-																		common.Recover2Send[element.Method][[2]int64{ruleid, element.Id}].Alerts = append(common.Recover2Send[element.Method][[2]int64{ruleid, element.Id}].Alerts, common.SingleAlert{
-																			Id:       recoverInfo.Id,
-																			Count:    recoverInfo.Count,
-																			Value:    elemt.Value,
-																			Summary:  elemt.Annotations.Summary,
-																			Hostname: recoverInfo.Hostname,
-																			Labels:   elemt.Labels,
-																		})
 																	}
+																} else {
+																	common.Recover2Send[element.Method][[2]int64{ruleid, element.Id}].Alerts = append(common.Recover2Send[element.Method][[2]int64{ruleid, element.Id}].Alerts, common.SingleAlert{
+																		Id:       recoverInfo.Id,
+																		Count:    recoverInfo.Count,
+																		Value:    elemt.Value,
+																		Summary:  elemt.Annotations.Summary,
+																		Hostname: recoverInfo.Hostname,
+																	})
 																}
-																//logs.Panic.Debug("[%s] %v",common.Recover2Send["LANXIN"])
-																common.Lock.Unlock()
 															}
+															//logs.Panic.Debug("[%s] %v",common.Recover2Send["LANXIN"])
+															common.Lock.Unlock()
 														}
 													}
 												}

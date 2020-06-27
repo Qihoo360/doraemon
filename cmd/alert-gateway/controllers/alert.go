@@ -99,14 +99,14 @@ func (c *AlertController) HandleAlerts() {
 			logs.Panic.Error("Panic in HandleAlerts:%v\n%s", e, buf)
 		}
 	}()
-	var alert common.Alert
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	logs.Originloger.Info("%v\n", alert)
+	var alerts common.Alerts
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &alerts)
+	logs.Originloger.Info("%v\n", alerts)
 	if err != nil {
 		logs.Error("Unmarshal error:%s", err)
 	} else {
 		var Receiver *models.Alerts
-		Receiver.AlertsHandler(&alert)
+		Receiver.AlertsHandler(&alerts)
 	}
 	var ans common.Res
 	c.Data["json"] = &ans

@@ -298,7 +298,54 @@ func (u *Alerts) ConfirmAll(confirmList *common.Confirm) error {
 	return errors.Wrap(err, "database update error")
 }
 
-func (u *Alerts) AlertsHandler(alert *common.Alert) {
+type alertForQuery struct {
+	*common.Alert
+	label    string
+	hostname string
+	ruleId   int64
+	firedAt  time.Time
+}
+
+/*
+ set value for fields in alertForQuery
+*/
+func (a *alertForQuery) setFields() {
+	var orderKey []string
+	var labels []string
+
+	// set ruleId
+	a.ruleId, _ = strconv.ParseInt(a.Annotations.RuleId, 10, 64)
+	for key := range a.Labels {
+		orderKey = append(orderKey, key)
+	}
+	sort.Strings(orderKey)
+	for _, i := range orderKey {
+		labels = append(labels, i+"\a"+a.Labels[i])
+	}
+	// set label
+	a.label = strings.Join(labels, "\v")
+	// set firedAt
+	a.firedAt = a.FiredAt.Truncate(time.Second)
+	// set hostname
+	a.setHostname()
+}
+
+/*
+ set hostname by instance label on data
+*/
+func (a *alertForQuery) setHostname() {
+	h := ""
+	if _, ok := a.Labels["instance"]; ok {
+		h = a.Labels["instance"]
+		boundary := strings.LastIndex(h, ":")
+		if boundary != -1 {
+			h = h[:boundary]
+		}
+	}
+	a.hostname = h
+}
+
+func (u *Alerts) AlertsHandler(alert *common.Alerts) {
 	defer func() {
 		if e := recover(); e != nil {
 			buf := make([]byte, 16384)
@@ -311,33 +358,36 @@ func (u *Alerts) AlertsHandler(alert *common.Alert) {
 	now := time.Now().Format("15:04:05")
 	todayZero, _ := time.ParseInLocation("2006-01-02", "2019-01-01 15:22:22", time.Local)
 	for _, elemt := range *alert {
-		ruleid, _ := strconv.ParseInt(elemt.Annotations.RuleId, 10, 64)
-		var orderkey []string
-		var labels []string
-		var label string
-		var firedat time.Time
+		//ruleid, _ := strconv.ParseInt(elemt.Annotations.RuleId, 10, 64)
+		//var orderkey []string
+		//var labels []string
+		//var label string
+		//var firedat time.Time
 		var queryres []struct {
 			Id     int64
 			Status uint8
 		}
-		for key := range elemt.Labels {
-			orderkey = append(orderkey, key)
-		}
-		sort.Strings(orderkey)
-		for _, i := range orderkey {
-			labels = append(labels, i+"\a"+elemt.Labels[i])
-		}
-		hostname := ""
-		if _, ok := elemt.Labels["instance"]; ok {
-			hostname = elemt.Labels["instance"]
-			boundary := strings.LastIndex(hostname, ":")
-			if boundary != -1 {
-				hostname = hostname[:boundary]
-			}
-		}
-		label = strings.Join(labels, "\v")
-		firedat = elemt.FiredAt.Truncate(time.Second)
-		_, err := Ormer().Raw("SELECT id,status FROM alert WHERE rule_id =? AND labels=? AND fired_at=?", ruleid, label, firedat).QueryRows(&queryres)
+		//for key := range elemt.Labels {
+		//	orderkey = append(orderkey, key)
+		//}
+		//sort.Strings(orderkey)
+		//for _, i := range orderkey {
+		//	labels = append(labels, i+"\a"+elemt.Labels[i])
+		//}
+		//hostname := ""
+		//if _, ok := elemt.Labels["instance"]; ok {
+		//	hostname = elemt.Labels["instance"]
+		//	boundary := strings.LastIndex(hostname, ":")
+		//	if boundary != -1 {
+		//		hostname = hostname[:boundary]
+		//	}
+		//}
+		//label = strings.Join(labels, "\v")
+		//firedat = elemt.FiredAt.Truncate(time.Second)
+		a := &alertForQuery{Alert: &elemt}
+		a.setFields()
+
+		_, err := Ormer().Raw("SELECT id,status FROM alert WHERE rule_id =? AND labels=? AND fired_at=?", a.ruleId, a.label, a.firedAt).QueryRows(&queryres)
 		if err == nil {
 			if len(queryres) > 0 {
 				if queryres[0].Status != 0 {
@@ -351,20 +401,20 @@ func (u *Alerts) AlertsHandler(alert *common.Alert) {
 						}{}
 						o := orm.NewOrm()
 						o.Begin()
-						err = o.Raw("SELECT id,count,hostname From alert WHERE rule_id =? AND labels=? AND fired_at=? FOR UPDATE", ruleid, label, firedat).QueryRow(&recoverInfo)
+						err = o.Raw("SELECT id,count,hostname From alert WHERE rule_id =? AND labels=? AND fired_at=? FOR UPDATE", a.ruleId, a.label, a.firedAt).QueryRow(&recoverInfo)
 						if err == nil {
 							if recoverInfo.Id != 0 {
 								_, err = o.Raw("UPDATE alert SET status=?,summary=?,description=?,value=?,resolved_at=? WHERE id=?", elemt.State, elemt.Annotations.Summary, elemt.Annotations.Description, elemt.Value, elemt.ResolvedAt, recoverInfo.Id).Exec()
 								if err == nil {
 									//logs.Alertloger.Info("AlertRecovered:%s", elemt)
 									common.Rw.RLock()
-									if _, ok := common.Maintain[hostname]; !ok {
+									if _, ok := common.Maintain[a.hostname]; !ok {
 										var userGroupList []common.UserGroup
 										var planId struct {
 											PlanId  int64
 											Summary string
 										}
-										Ormer().Raw("SELECT plan_id,summary FROM rule WHERE id=?", ruleid).QueryRow(&planId)
+										Ormer().Raw("SELECT plan_id,summary FROM rule WHERE id=?", a.ruleId).QueryRow(&planId)
 										if _, ok := Cache[planId.PlanId]; !ok {
 											Ormer().Raw("SELECT id,start_time,end_time,start,period,reverse_polish_notation,user,`group`,duty_group,method FROM plan_receiver WHERE plan_id=? AND (method='LANXIN' OR method LIKE 'HOOK %')", planId.PlanId).QueryRows(&userGroupList)
 											Cache[planId.PlanId] = userGroupList
@@ -376,11 +426,11 @@ func (u *Alerts) AlertsHandler(alert *common.Alert) {
 													if recoverInfo.Count-element.Start >= element.Period {
 														sendFlag = true
 													} else {
-														if _, ok := common.RuleCount[[2]int64{ruleid, int64(element.Start)}]; ok {
-															logs.Panic.Debug("[%s] id:%d,rulecount:%d,count:%d,start:%d,period:%d", now, recoverInfo.Id, common.RuleCount[[2]int64{ruleid, int64(element.Start)}], recoverInfo.Count, element.Start, element.Period)
-															if common.RuleCount[[2]int64{ruleid, int64(element.Start)}] >= int64(recoverInfo.Count-element.Start) {
-																logs.Panic.Debug("[%s] id:%d %d,%s", now, recoverInfo.Id, (common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))%int64(element.Period), common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-((common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))/int64(element.Period))*int64(element.Period) >= int64(element.Period))
-																if (common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))%int64(element.Period) == 0 || common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-((common.RuleCount[[2]int64{ruleid, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))/int64(element.Period))*int64(element.Period) >= int64(element.Period) {
+														if _, ok := common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}]; ok {
+															logs.Panic.Debug("[%s] id:%d,rulecount:%d,count:%d,start:%d,period:%d", now, recoverInfo.Id, common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}], recoverInfo.Count, element.Start, element.Period)
+															if common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}] >= int64(recoverInfo.Count-element.Start) {
+																logs.Panic.Debug("[%s] id:%d %d,%s", now, recoverInfo.Id, (common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))%int64(element.Period), common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}]-((common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))/int64(element.Period))*int64(element.Period) >= int64(element.Period))
+																if (common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))%int64(element.Period) == 0 || common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}]-((common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))/int64(element.Period))*int64(element.Period) >= int64(element.Period) {
 																	sendFlag = true
 																}
 															}
@@ -390,8 +440,8 @@ func (u *Alerts) AlertsHandler(alert *common.Alert) {
 														if element.ReversePolishNotation == "" || common.CalculateReversePolishNotation(elemt.Labels, element.ReversePolishNotation) {
 															common.Lock.Lock()
 															if _, ok := common.Recover2Send[element.Method]; !ok {
-																common.Recover2Send[element.Method] = map[[2]int64]*common.Ready2Send{[2]int64{ruleid, element.Id}: &common.Ready2Send{
-																	RuleId: ruleid,
+																common.Recover2Send[element.Method] = map[[2]int64]*common.Ready2Send{[2]int64{a.ruleId, element.Id}: &common.Ready2Send{
+																	RuleId: a.ruleId,
 																	Start:  element.Id,
 																	User: SendAlertsFor(&common.ValidUserGroup{
 																		User:      element.User,
@@ -407,9 +457,9 @@ func (u *Alerts) AlertsHandler(alert *common.Alert) {
 																	}},
 																}}
 															} else {
-																if _, ok := common.Recover2Send[element.Method][[2]int64{ruleid, element.Id}]; !ok {
-																	common.Recover2Send[element.Method][[2]int64{ruleid, element.Id}] = &common.Ready2Send{
-																		RuleId: ruleid,
+																if _, ok := common.Recover2Send[element.Method][[2]int64{a.ruleId, element.Id}]; !ok {
+																	common.Recover2Send[element.Method][[2]int64{a.ruleId, element.Id}] = &common.Ready2Send{
+																		RuleId: a.ruleId,
 																		Start:  element.Id,
 																		User: SendAlertsFor(&common.ValidUserGroup{
 																			User:      element.User,
@@ -426,7 +476,7 @@ func (u *Alerts) AlertsHandler(alert *common.Alert) {
 																		}},
 																	}
 																} else {
-																	common.Recover2Send[element.Method][[2]int64{ruleid, element.Id}].Alerts = append(common.Recover2Send[element.Method][[2]int64{ruleid, element.Id}].Alerts, common.SingleAlert{
+																	common.Recover2Send[element.Method][[2]int64{a.ruleId, element.Id}].Alerts = append(common.Recover2Send[element.Method][[2]int64{a.ruleId, element.Id}].Alerts, common.SingleAlert{
 																		Id:       recoverInfo.Id,
 																		Count:    recoverInfo.Count,
 																		Value:    elemt.Value,
@@ -457,7 +507,7 @@ func (u *Alerts) AlertsHandler(alert *common.Alert) {
 						}
 						//send the recover message
 					} else {
-						Ormer().Raw("UPDATE alert SET summary=?,description=?,value=? WHERE rule_id =? AND labels=? AND fired_at=?", elemt.Annotations.Summary, elemt.Annotations.Description, elemt.Value, ruleid, label, firedat).Exec()
+						Ormer().Raw("UPDATE alert SET summary=?,description=?,value=? WHERE rule_id =? AND labels=? AND fired_at=?", elemt.Annotations.Summary, elemt.Annotations.Description, elemt.Value, a.ruleId, a.label, a.firedAt).Exec()
 					}
 				} else {
 					continue
@@ -465,15 +515,15 @@ func (u *Alerts) AlertsHandler(alert *common.Alert) {
 			} else {
 				var alert Alerts
 				alert.Id = 0 //reset the "Id" to 0,which is very important:after a record is inserted,the value of "Id" will not be 0,but the auto primary key of the record
-				alert.Rule = &Rules{Id: ruleid}
-				alert.Labels = label
-				alert.FiredAt = &firedat
+				alert.Rule = &Rules{Id: a.ruleId}
+				alert.Labels = a.label
+				alert.FiredAt = &a.firedAt
 				alert.Description = elemt.Annotations.Description
 				alert.Summary = elemt.Annotations.Summary
 				alert.Count = -1
 				alert.Value = elemt.Value
 				alert.Status = int8(elemt.State)
-				alert.Hostname = hostname
+				alert.Hostname = a.hostname
 				alert.ConfirmedAt = &todayZero
 				alert.ConfirmedBefore = &todayZero
 				alert.ResolvedAt = &todayZero

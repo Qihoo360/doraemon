@@ -93,7 +93,9 @@ func (u UserGroup) IsOnDuty() bool {
 		(u.StartTime > u.EndTime && (u.StartTime <= now || now <= u.EndTime)) // // 跨 00:00
 }
 
-type Alert []struct {
+type Alerts []Alert
+
+type Alert struct {
 	ActiveAt    time.Time `json:"active_at"`
 	Annotations struct {
 		Description string `json:"description"`

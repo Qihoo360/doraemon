@@ -116,50 +116,20 @@ func Filter(alerts map[int64][]Record, maxCount map[int64]int) map[string][]comm
 		for _, element := range Cache[planId.PlanId] {
 			if element.IsValid() && element.IsOnDuty() {
 				if maxCount[key] >= element.Start {
-					if _, ok := common.RuleCount[[2]int64{key, int64(element.Start)}]; !ok {
-						NewRuleCount[[2]int64{key, int64(element.Start)}] = -1
+					k := [2]int64{key, int64(element.Start)}
+					if _, ok := common.RuleCount[k]; !ok {
+						NewRuleCount[k] = -1
 					} else {
-						NewRuleCount[[2]int64{key, int64(element.Start)}] = common.RuleCount[[2]int64{key, int64(element.Start)}]
+						NewRuleCount[k] = common.RuleCount[k]
 					}
-					NewRuleCount[[2]int64{key, int64(element.Start)}] += 1
+					NewRuleCount[k] += 1
 
-					if NewRuleCount[[2]int64{key, int64(element.Start)}]%int64(element.Period) == 0 {
+					if NewRuleCount[k]%int64(element.Period) == 0 {
+						// add alerts to AlertsMap
 						if _, ok := AlertsMap[element.Start]; !ok {
-							AlertsMap[element.Start] = []common.SingleAlert{}
-						} else {
-							if len(AlertsMap[element.Start]) > 0 {
-								var filteredAlerts []common.SingleAlert
-
-								if element.ReversePolishNotation == "" {
-									filteredAlerts = AlertsMap[element.Start]
-								} else {
-									for _, alert := range AlertsMap[element.Start] {
-										if common.CalculateReversePolishNotation(alert.Labels, element.ReversePolishNotation) {
-											filteredAlerts = append(filteredAlerts, alert)
-										}
-									}
-								}
-								putToSendClass(SendClass, key, element, filteredAlerts)
-							}
-							continue
+							putToAlertMap(AlertsMap, element, alerts[key])
 						}
-
-						for _, alert := range alerts[key] {
-							if alert.Count >= element.Start {
-								if _, ok := common.Maintain[alert.Hostname]; !ok {
-
-									AlertsMap[element.Start] = append(AlertsMap[element.Start], common.SingleAlert{
-										Id:       alert.Id,
-										Count:    alert.Count,
-										Value:    alert.Value,
-										Summary:  alert.Summary,
-										Hostname: alert.Hostname,
-										Labels:   alert.getLabelMap(),
-									})
-								}
-							}
-						}
-
+						// forward alerts in AlertsMap to SendClass
 						if len(AlertsMap[element.Start]) > 0 {
 							var filteredAlerts []common.SingleAlert
 							if element.ReversePolishNotation == "" {
@@ -198,6 +168,26 @@ func putToSendClass(sendClass map[string][]common.Ready2Send, ruleId int64, ug c
 		}),
 		Alerts: alerts,
 	})
+}
+
+func putToAlertMap(alertMap map[int][]common.SingleAlert, ug common.UserGroup, alerts []Record) {
+
+	alertMap[ug.Start] = []common.SingleAlert{}
+
+	for _, alert := range alerts {
+		if alert.Count >= ug.Start {
+			if _, ok := common.Maintain[alert.Hostname]; !ok {
+				alertMap[ug.Start] = append(alertMap[ug.Start], common.SingleAlert{
+					Id:       alert.Id,
+					Count:    alert.Count,
+					Value:    alert.Value,
+					Summary:  alert.Summary,
+					Hostname: alert.Hostname,
+					Labels:   alert.getLabelMap(),
+				})
+			}
+		}
+	}
 }
 
 func init() {

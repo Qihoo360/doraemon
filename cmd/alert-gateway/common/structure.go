@@ -13,7 +13,7 @@ var ErrHttpRequest = errors.New("create HTTP request failed")
 var Maintain map[string]bool
 var RuleCount map[[2]int64]int64
 var Recover2Send = map[string]map[[2]int64]*Ready2Send{
-	"LANXIN": map[[2]int64]*Ready2Send{},
+	AlertMethodLanxin: map[[2]int64]*Ready2Send{},
 	//"HOOK":   map[[2]int64]*Ready2Send{},
 }
 

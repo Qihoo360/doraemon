@@ -109,13 +109,13 @@ func (r *Reloader) Update() error {
 		}
 		if manager == nil {
 			m, err := NewManager(r.context, r.logger, p.Prom, r.config)
-			m.Run()
-			manager = m
-			r.managers = append(r.managers, manager)
 			if err != nil {
 				level.Error(r.logger).Log("msg", "create manager error", "error", err, "prom_id", manager.Prom.ID, "prom_url", manager.Prom.URL)
 				return err
 			}
+			m.Run()
+			manager = m
+			r.managers = append(r.managers, manager)
 		}
 		if manager != nil {
 			err := manager.Update(p.Rules)

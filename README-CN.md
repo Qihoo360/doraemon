@@ -29,7 +29,7 @@ Doraemon是一个基于 **[Prometheus](https://prometheus.io)** 的监控系统�
 - Docker 17.05+ ([installation manual](https://docs.docker.com/install))
 - Bee ([installation manual](https://github.com/beego/bee))
 - Node.js v10.16+ and npm 6.10+ ([installation with nvm](https://github.com/creationix/nvm#usage))
-- MySQL 5.6+ (Most of the data is in MySQL.)
+- MySQL 5.6.X (数据库最好使用该版本，否则报警时间可能显示不正常)
 
 ## 快速启动
 

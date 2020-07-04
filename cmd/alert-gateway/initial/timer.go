@@ -30,6 +30,18 @@ type Record struct {
 	Labels          string
 }
 
+func (r Record) getLabelMap() map[string]string {
+	labelMap := map[string]string{}
+	if r.Labels != "" {
+		for _, j := range strings.Split(r.Labels, "\v") {
+			kv := strings.Split(j, "\a")
+			labelMap[kv[0]] = kv[1]
+		}
+	}
+
+	return labelMap
+}
+
 type RecoverRecord struct {
 	Id       int64
 	RuleId   int64
@@ -80,178 +92,11 @@ func UpdateMaintainlist() {
 	common.Rw.Unlock()
 }
 
-func SendAll(method string, from string, param map[string]string, content []common.Ready2Send, now string) {
-	defer func() {
-		if e := recover(); e != nil {
-			buf := make([]byte, 16384)
-			buf = buf[:runtime.Stack(buf, false)]
-			logs.Panic.Error("Panic in SendAll:%v\n%s", e, buf)
-		}
-	}()
-	if method == "SMS" {
-		url := beego.AppConfig.String("SmsUrl")
-		for _, i := range content {
-			msg := []string{"[故障:" + strconv.FormatInt(int64(len(i.Alerts)), 10) + "条] " + i.Alerts[0].Summary}
-			msg = append(msg, "[时间] "+now)
-			data, _ := json.Marshal(common.Msg{
-				Content: strings.Join(msg, "\n"),
-				From:    from,
-				Title:   "Alerts",
-				To:      i.User,
-			})
-			common.HttpPost(url, param, nil, data)
-		}
-	} else if method == "LANXIN" {
-		url := beego.AppConfig.String("LanxinUrl")
-		for _, i := range content {
-			msg := []string{"[故障:" + strconv.FormatInt(int64(len(i.Alerts)), 10) + "条] " + i.Alerts[0].Summary}
-			for _, j := range i.Alerts {
-				duration, _ := time.ParseDuration(strconv.FormatInt(int64(j.Count), 10) + "m")
-
-				id := strconv.FormatInt(j.Id, 10)
-				value := strconv.FormatFloat(j.Value, 'f', 2, 64)
-				msg = append(msg, "["+duration.String()+"][ID:"+id+"] "+j.Hostname+" 当前值:"+value)
-			}
-			msg = append(msg, "[时间] "+now)
-			msg = append(msg, "[确认链接] "+beego.AppConfig.String("WebUrl")+"/alerts_confirm/"+strconv.FormatInt(i.RuleId, 10)+"?start="+strconv.FormatInt(i.Start, 10))
-			data, _ := json.Marshal(common.Msg{
-				Content: strings.Join(msg, "\n"),
-				From:    from,
-				Title:   "Alerts",
-				To:      i.User,
-			})
-			common.HttpPost(url, param, nil, data)
-		}
-	} else {
-		url := beego.AppConfig.String("CallUrl")
-		for _, i := range content {
-			msg := []string{"故障" + strconv.FormatInt(int64(len(i.Alerts)), 10) + "条 " + i.Alerts[0].Summary + " 详细信息请到蓝信查看"}
-			data, _ := json.Marshal(common.Msg{
-				Content: strings.Join(msg, "\n"),
-				From:    from,
-				Title:   "Alerts",
-				To:      i.User,
-			})
-			common.HttpPost(url, param, nil, data)
-		}
-	}
-
-}
-
-func Send2Hook(content []common.Ready2Send, now string, t string, url string) {
-	defer func() {
-		if e := recover(); e != nil {
-			buf := make([]byte, 16384)
-			buf = buf[:runtime.Stack(buf, false)]
-			logs.Panic.Error("Panic in Send2Hook:%v\n%s", e, buf)
-		}
-	}()
-	if t == "recover" {
-		for _, i := range content {
-			data, _ := json.Marshal(
-				struct {
-					Type   string               `json:"type"`
-					Time   string               `json:"time"`
-					RuleId int64                `json:"rule_id"`
-					To     []string             `json:"to"`
-					Alerts []common.SingleAlert `json:"alerts"`
-				}{
-					Type:   t,
-					RuleId: i.RuleId,
-					Time:   now,
-					To:     i.User,
-					Alerts: i.Alerts,
-				})
-			common.HttpPost(url, nil, common.GenerateJsonHeader(), data)
-		}
-	} else {
-		for _, i := range content {
-			data, _ := json.Marshal(
-				struct {
-					Type        string               `json:"type"`
-					Time        string               `json:"time"`
-					RuleId      int64                `json:"rule_id"`
-					To          []string             `json:"to"`
-					ConfirmLink string               `json:"confirm_link"`
-					Alerts      []common.SingleAlert `json:"alerts"`
-				}{
-					Type:        t,
-					RuleId:      i.RuleId,
-					Time:        now,
-					ConfirmLink: beego.AppConfig.String("WebUrl") + "/alerts_confirm/" + strconv.FormatInt(i.RuleId, 10) + "?start=" + strconv.FormatInt(i.Start, 10),
-					To:          i.User,
-					Alerts:      i.Alerts,
-				})
-			common.HttpPost(url, nil, common.GenerateJsonHeader(), data)
-		}
-	}
-}
-
-func Sender(SendClass map[string][]common.Ready2Send, now string) {
-	for k, v := range SendClass {
-		switch k {
-		case "SMS":
-			go SendAll("SMS", "mis", map[string]string{"key": "6E358A78-0A5B-49D2-A12F-6A4EB07A9671"}, v, now)
-		case "LANXIN":
-			go SendAll("LANXIN", "StreeAlert", map[string]string{"key": "6E358A78-0A5B-49D2-A12F-6A4EB07A9671"}, v, now)
-			//logs.Alertloger.Info("[%s]%v:", now, v)
-		case "CALL":
-			go SendAll("CALL", "StreeAlert", map[string]string{"key": "6E358A78-0A5B-49D2-A12F-6A4EB07A9671"}, v, now)
-		default:
-			go Send2Hook(v, now, "alert", k[5:])
-		}
-	}
-}
-
-func RecoverSender(SendClass map[string]map[[2]int64]*common.Ready2Send, now string) {
-	lanxin := []common.Ready2Send{}
-	for _, v := range SendClass["LANXIN"] {
-		lanxin = append(lanxin, *v)
-	}
-	go SendRecover(beego.AppConfig.String("LanxinUrl"), "StreeAlert", map[string]string{"key": "6E358A78-0A5B-49D2-A12F-6A4EB07A9671"}, lanxin, now)
-	//logs.Panic.Info("send[%s]:%v", now, lanxin)
-	delete(SendClass, "LANXIN")
-	for k := range SendClass {
-		hook := []common.Ready2Send{}
-		for _, u := range SendClass[k] {
-			hook = append(hook, *u)
-		}
-		go Send2Hook(hook, now, "recover", k[5:])
-	}
-}
-
-func SendRecover(url string, from string, param map[string]string, content []common.Ready2Send, now string) {
-	defer func() {
-		if e := recover(); e != nil {
-			buf := make([]byte, 16384)
-			buf = buf[:runtime.Stack(buf, false)]
-			logs.Panic.Error("Panic in SendRecover:%v\n%s", e, buf)
-		}
-	}()
-	for _, i := range content {
-		msg := []string{"[故障恢复:" + strconv.FormatInt(int64(len(i.Alerts)), 10) + "条] " + i.Alerts[0].Summary}
-		for _, j := range i.Alerts {
-			duration, _ := time.ParseDuration(strconv.FormatInt(int64(j.Count), 10) + "m")
-
-			id := strconv.FormatInt(j.Id, 10)
-			value := strconv.FormatFloat(j.Value, 'f', 2, 64)
-			msg = append(msg, "["+duration.String()+"][ID:"+id+"] "+j.Hostname+" 当前值:"+value)
-		}
-		msg = append(msg, "[时间] "+now)
-		data, _ := json.Marshal(common.Msg{
-			Content: strings.Join(msg, "\n"),
-			From:    from,
-			Title:   "Alerts",
-			To:      i.User})
-		common.HttpPost(url, param, nil, data)
-	}
-}
-
 func Filter(alerts map[int64][]Record, maxCount map[int64]int) map[string][]common.Ready2Send {
 	SendClass := map[string][]common.Ready2Send{
-		"SMS":    []common.Ready2Send{},
-		"LANXIN": []common.Ready2Send{},
-		"CALL":   []common.Ready2Send{},
+		common.AlertMethodSms:    []common.Ready2Send{},
+		common.AlertMethodLanxin: []common.Ready2Send{},
+		common.AlertMethodCall:   []common.Ready2Send{},
 		//"HOOK":   []common.Ready2Send{},
 	}
 	Cache := map[int64][]common.UserGroup{}
@@ -271,105 +116,32 @@ func Filter(alerts map[int64][]Record, maxCount map[int64]int) map[string][]comm
 		for _, element := range Cache[planId.PlanId] {
 			if element.IsValid() && element.IsOnDuty() {
 				if maxCount[key] >= element.Start {
-					if _, ok := common.RuleCount[[2]int64{key, int64(element.Start)}]; !ok {
-						NewRuleCount[[2]int64{key, int64(element.Start)}] = -1
+					k := [2]int64{key, int64(element.Start)}
+					if _, ok := common.RuleCount[k]; !ok {
+						NewRuleCount[k] = -1
 					} else {
-						NewRuleCount[[2]int64{key, int64(element.Start)}] = common.RuleCount[[2]int64{key, int64(element.Start)}]
+						NewRuleCount[k] = common.RuleCount[k]
 					}
-					NewRuleCount[[2]int64{key, int64(element.Start)}] += 1
+					NewRuleCount[k] += 1
 
-					if NewRuleCount[[2]int64{key, int64(element.Start)}]%int64(element.Period) == 0 {
+					if NewRuleCount[k]%int64(element.Period) == 0 {
+						// add alerts to AlertsMap
 						if _, ok := AlertsMap[element.Start]; !ok {
-							AlertsMap[element.Start] = []common.SingleAlert{}
-						} else {
-							if len(AlertsMap[element.Start]) > 0 {
-								if element.ReversePolishNotation == "" {
-									SendClass[element.Method] = append(SendClass[element.Method], common.Ready2Send{
-										RuleId: key,
-										Start:  element.Id,
-										User: models.SendAlertsFor(&common.ValidUserGroup{
-											User:      element.User,
-											Group:     element.Group,
-											DutyGroup: element.DutyGroup,
-										}),
-										Alerts: AlertsMap[element.Start],
-									})
-								} else {
-									filteredAlerts := []common.SingleAlert{}
-									for _, alert := range AlertsMap[element.Start] {
-										if common.CalculateReversePolishNotation(alert.Labels, element.ReversePolishNotation) {
-											filteredAlerts = append(filteredAlerts, alert)
-										}
-									}
-									if len(filteredAlerts) > 0 {
-										SendClass[element.Method] = append(SendClass[element.Method], common.Ready2Send{
-											RuleId: key,
-											Start:  element.Id,
-											User: models.SendAlertsFor(&common.ValidUserGroup{
-												User:      element.User,
-												Group:     element.Group,
-												DutyGroup: element.DutyGroup,
-											}),
-											Alerts: filteredAlerts,
-										})
-									}
-								}
-							}
-							continue
+							putToAlertMap(AlertsMap, element, alerts[key])
 						}
-						for _, alert := range alerts[key] {
-							if alert.Count >= element.Start {
-								if _, ok := common.Maintain[alert.Hostname]; !ok {
-									labelMap := map[string]string{}
-									if alert.Labels != "" {
-										for _, j := range strings.Split(alert.Labels, "\v") {
-											kv := strings.Split(j, "\a")
-											labelMap[kv[0]] = kv[1]
-										}
-									}
-									AlertsMap[element.Start] = append(AlertsMap[element.Start], common.SingleAlert{
-										Id:       alert.Id,
-										Count:    alert.Count,
-										Value:    alert.Value,
-										Summary:  alert.Summary,
-										Hostname: alert.Hostname,
-										Labels:   labelMap,
-									})
-								}
-							}
-						}
+						// forward alerts in AlertsMap to SendClass
 						if len(AlertsMap[element.Start]) > 0 {
+							var filteredAlerts []common.SingleAlert
 							if element.ReversePolishNotation == "" {
-								SendClass[element.Method] = append(SendClass[element.Method], common.Ready2Send{
-									RuleId: key,
-									Start:  element.Id,
-									User: models.SendAlertsFor(&common.ValidUserGroup{
-										User:      element.User,
-										Group:     element.Group,
-										DutyGroup: element.DutyGroup,
-									}),
-									Alerts: AlertsMap[element.Start],
-								})
+								filteredAlerts = AlertsMap[element.Start]
 							} else {
-								filteredAlerts := []common.SingleAlert{}
 								for _, alert := range AlertsMap[element.Start] {
 									if common.CalculateReversePolishNotation(alert.Labels, element.ReversePolishNotation) {
 										filteredAlerts = append(filteredAlerts, alert)
 									}
 								}
-								if len(filteredAlerts) > 0 {
-									SendClass[element.Method] = append(SendClass[element.Method], common.Ready2Send{
-										RuleId: key,
-										Start:  element.Id,
-										User: models.SendAlertsFor(&common.ValidUserGroup{
-											User:      element.User,
-											Group:     element.Group,
-											DutyGroup: element.DutyGroup,
-										}),
-										Alerts: filteredAlerts,
-									})
-								}
 							}
+							putToSendClass(SendClass, key, element, filteredAlerts)
 						}
 					}
 				}
@@ -379,6 +151,43 @@ func Filter(alerts map[int64][]Record, maxCount map[int64]int) map[string][]comm
 	common.RuleCount = NewRuleCount
 	//logs.Alertloger.Debug("RuleCount: %v", common.RuleCount)
 	return SendClass
+}
+
+func putToSendClass(sendClass map[string][]common.Ready2Send, ruleId int64, ug common.UserGroup, alerts []common.SingleAlert) {
+	if len(alerts) <= 0 {
+		return
+	}
+
+	sendClass[ug.Method] = append(sendClass[ug.Method], common.Ready2Send{
+		RuleId: ruleId,
+		Start:  ug.Id,
+		User: models.SendAlertsFor(&common.ValidUserGroup{
+			User:      ug.User,
+			Group:     ug.Group,
+			DutyGroup: ug.DutyGroup,
+		}),
+		Alerts: alerts,
+	})
+}
+
+func putToAlertMap(alertMap map[int][]common.SingleAlert, ug common.UserGroup, alerts []Record) {
+
+	alertMap[ug.Start] = []common.SingleAlert{}
+
+	for _, alert := range alerts {
+		if alert.Count >= ug.Start {
+			if _, ok := common.Maintain[alert.Hostname]; !ok {
+				alertMap[ug.Start] = append(alertMap[ug.Start], common.SingleAlert{
+					Id:       alert.Id,
+					Count:    alert.Count,
+					Value:    alert.Value,
+					Summary:  alert.Summary,
+					Hostname: alert.Hostname,
+					Labels:   alert.getLabelMap(),
+				})
+			}
+		}
+	}
 }
 
 func init() {
@@ -432,7 +241,7 @@ func init() {
 				common.Lock.Lock()
 				recover2send := common.Recover2Send
 				common.Recover2Send = map[string]map[[2]int64]*common.Ready2Send{
-					"LANXIN": map[[2]int64]*common.Ready2Send{},
+					common.AlertMethodLanxin: map[[2]int64]*common.Ready2Send{},
 					//"HOOK":   map[[2]int64]*common.Ready2Send{},
 				}
 				common.Lock.Unlock()

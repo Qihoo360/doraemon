@@ -100,15 +100,17 @@ func (c *AlertController) HandleAlerts() {
 		}
 	}()
 	var alerts common.Alerts
+	var ans common.Res
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &alerts)
 	logs.Originloger.Info("%v\n", alerts)
 	if err != nil {
 		logs.Error("Unmarshal error:%s", err)
+		ans.Code = 1
+		ans.Msg = "Unmarshal error"
 	} else {
 		var Receiver *models.Alerts
 		Receiver.AlertsHandler(&alerts)
 	}
-	var ans common.Res
 	c.Data["json"] = &ans
 	c.ServeJSON()
 }

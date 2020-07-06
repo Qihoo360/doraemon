@@ -29,7 +29,7 @@ The whole system adopts the separation of front and back ends, in which the fron
 - Docker 17.05+ ([installation manual](https://docs.docker.com/install))
 - Bee ([installation manual](https://github.com/beego/bee))
 - Node.js v10.16+ and npm 6.10+ ([installation with nvm](https://github.com/creationix/nvm#usage))
-- MySQL 5.6+ (Most of the data is in MySQL.)
+- MySQL 5.6.X (Most of the data is in MySQL.)
 
 ## Quickly Start
 

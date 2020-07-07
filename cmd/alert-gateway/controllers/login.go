@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"encoding/json"
+	"github.com/Qihoo360/doraemon/cmd/alert-gateway/logs"
+	"github.com/Qihoo360/doraemon/pkg/auth/ldaputil"
 	"github.com/astaxie/beego"
 
 	"github.com/Qihoo360/doraemon/cmd/alert-gateway/common"
@@ -88,6 +90,30 @@ func (c *LoginController) Local() {
 		res.Code = -1
 		res.Msg = err.Error()
 	}
+	c.Data["json"] = &res
+	c.ServeJSON()
+}
+
+// @router /ldap [post]
+func (c *LoginController) Ldap() {
+	var auth common.AuthModel
+	var res common.Res
+
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &auth); err != nil {
+		res.Code = 1
+		res.Msg = "Unmarshal error"
+	} else {
+		if err := ldaputil.Authenticate(auth.Username, auth.Password); err != nil {
+			logs.Info("authenticate fail error: %v", err)
+			res.Code = -1
+			res.Msg = "Unauthorized"
+		} else {
+			c.SetSession("username", auth.Username)
+			c.SetSession("method", "ldap")
+			res.Msg = "Success"
+		}
+	}
+
 	c.Data["json"] = &res
 	c.ServeJSON()
 }

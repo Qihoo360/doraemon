@@ -1,18 +1,52 @@
 package main
 
 import (
-	"github.com/astaxie/beego"
-
 	"github.com/Qihoo360/doraemon/cmd/alert-gateway/initial"
+	"github.com/Qihoo360/doraemon/pkg/auth/ldaputil"
+	"github.com/astaxie/beego"
+	"github.com/go-ldap/ldap"
+
 	_ "github.com/Qihoo360/doraemon/cmd/alert-gateway/logs"
 	_ "github.com/Qihoo360/doraemon/cmd/alert-gateway/routers"
 )
+
+func parseLdapScope(scope string) int {
+	switch scope {
+	case "0":
+		return ldap.ScopeBaseObject
+	case "1":
+		return ldap.ScopeSingleLevel
+	case "2":
+		return ldap.ScopeWholeSubtree
+	default:
+		return ldap.ScopeWholeSubtree
+	}
+}
 
 func main() {
 	if beego.BConfig.RunMode == "dev" {
 		beego.BConfig.WebConfig.DirectoryIndex = true
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
+
+	cfg, err := beego.AppConfig.GetSection("auth.ldap")
+	if err != nil {
+		panic(err)
+	}
+
+	if cfg["enabled"] == "true" {
+		ldapCfg := ldaputil.LdapConfig{
+			Url:          cfg["ldap_url"],
+			BaseDN:       cfg["ldap_base_dn"],
+			Scope:        parseLdapScope(cfg["ldap_scope"]),
+			BindUsername: cfg["ldap_search_dn"],
+			BindPassword: cfg["ldap_search_password"],
+			Filter:       cfg["ldap_filter"],
+		}
+
+		ldaputil.InitLdap(&ldapCfg)
+	}
+
 	initial.InitDb()
 	beego.Run()
 }

@@ -67,8 +67,7 @@ func setLogger(logger *logs.BeeLogger, file string) {
 }
 
 func isExists(file string) bool {
-	f, err := os.Stat(file)
-	fmt.Println(f, ":", err)
+	_, err := os.Stat(file)
 	return err == nil || !os.IsNotExist(err)
 }
 

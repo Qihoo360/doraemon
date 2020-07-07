@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/Qihoo360/doraemon/cmd/alert-gateway/initial"
 	"github.com/Qihoo360/doraemon/pkg/auth/ldaputil"
 	"github.com/astaxie/beego"
 	"github.com/go-ldap/ldap"
@@ -46,8 +47,7 @@ func main() {
 		ldaputil.InitLdap(&ldapCfg)
 	}
 
-	// comment for test
-	//initial.InitDb()
+	initial.InitDb()
 	beego.Run()
 }
 

@@ -135,6 +135,15 @@ func init() {
 
 	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:LoginController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:LoginController"],
 		beego.ControllerComments{
+			Method:           "Ldap",
+			Router:           `/ldap`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
+
+	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:LoginController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:LoginController"],
+		beego.ControllerComments{
 			Method:           "GetMethod",
 			Router:           `/method`,
 			AllowHTTPMethods: []string{"get"},

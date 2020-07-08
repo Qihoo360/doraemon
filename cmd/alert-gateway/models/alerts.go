@@ -286,7 +286,7 @@ func (u *Alerts) ConfirmAll(confirmList *common.Confirm) error {
 		} else {
 			const AlertStatusOn = 2
 			if rs.Status == AlertStatusOn {
-				_, err = o.Raw("UPDATE alert SET status=1,confirmed_at=?,confirmed_by=?,confirmed_before=? WHERE id=?", now.Format("2006-01-02 15:04:05"), confirmList.User, now.Add(time.Duration(confirmList.Duration)*time.Minute).Format("2006-01-02 15:04:05"), id).Exec()
+				_, err = o.Raw("UPDATE alert SET status=1,confirmed_at=?,confirmed_by=?,confirmed_before=? WHERE id=?", now.Format("2006-01-02 15:04:05"), confirmList.User, now.Add(time.Duration(confirmList.Duration) * time.Minute).Format("2006-01-02 15:04:05"), id).Exec()
 				if err != nil {
 					o.Rollback()
 					return errors.Wrap(err, "database update error")
@@ -355,7 +355,7 @@ func (u *Alerts) AlertsHandler(alert *common.Alerts) {
 	}()
 	//rlist := []int64{}
 	Cache := map[int64][]common.UserGroup{}
-	now := time.Now().Format("15:04:05")
+	//now := time.Now().Format("15:04:05")
 	todayZero, _ := time.ParseInLocation("2006-01-02", "2019-01-01 15:22:22", time.Local)
 	for _, elemt := range *alert {
 
@@ -402,20 +402,8 @@ func (u *Alerts) AlertsHandler(alert *common.Alerts) {
 										for _, element := range Cache[planId.PlanId] {
 											if element.IsValid() && element.IsOnDuty() {
 												if recoverInfo.Count >= element.Start {
-													sendFlag := false
-													if recoverInfo.Count-element.Start >= element.Period {
-														sendFlag = true
-													} else {
-														if _, ok := common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}]; ok {
-															logs.Panic.Debug("[%s] id:%d,rulecount:%d,count:%d,start:%d,period:%d", now, recoverInfo.Id, common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}], recoverInfo.Count, element.Start, element.Period)
-															if common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}] >= int64(recoverInfo.Count-element.Start) {
-																logs.Panic.Debug("[%s] id:%d %d,%s", now, recoverInfo.Id, (common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))%int64(element.Period), common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}]-((common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))/int64(element.Period))*int64(element.Period) >= int64(element.Period))
-																if (common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))%int64(element.Period) == 0 || common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}]-((common.RuleCount[[2]int64{a.ruleId, int64(element.Start)}]-int64(recoverInfo.Count)+int64(element.Start))/int64(element.Period))*int64(element.Period) >= int64(element.Period) {
-																	sendFlag = true
-																}
-															}
-														}
-													}
+													sendFlag := shouldSend(recoverInfo.Id, a.ruleId, recoverInfo.Count, element)
+
 													if sendFlag {
 														if element.ReversePolishNotation == "" || common.CalculateReversePolishNotation(elemt.Labels, element.ReversePolishNotation) {
 															users := SendAlertsFor(&common.ValidUserGroup{
@@ -472,4 +460,26 @@ func (u *Alerts) AlertsHandler(alert *common.Alerts) {
 		}
 	}
 	//logs.Panic.Debug("[%s] recoverid: %v", now, rlist)
+}
+
+/*
+ whether recovery should be send
+ */
+func shouldSend(alertId, ruleId int64, alertCount int, ug common.UserGroup) (sendFlag bool) {
+	//sendFlag := false
+	if alertCount-ug.Start >= ug.Period {
+		sendFlag = true
+	} else {
+		if _, ok := common.RuleCount[[2]int64{ruleId, int64(ug.Start)}]; ok {
+			logs.Panic.Debug("id:%d,rulecount:%d,count:%d,start:%d,period:%d", alertId, common.RuleCount[[2]int64{ruleId, int64(ug.Start)}], alertCount, ug.Start, ug.Period)
+			if common.RuleCount[[2]int64{ruleId, int64(ug.Start)}] >= int64(alertCount-ug.Start) {
+				logs.Panic.Debug("[%s] id:%d %d,%s", alertId, (common.RuleCount[[2]int64{ruleId, int64(ug.Start)}]-int64(alertCount)+int64(ug.Start))%int64(ug.Period), common.RuleCount[[2]int64{ruleId, int64(ug.Start)}]-((common.RuleCount[[2]int64{ruleId, int64(ug.Start)}]-int64(alertCount)+int64(ug.Start))/int64(ug.Period))*int64(ug.Period) >= int64(ug.Period))
+				if (common.RuleCount[[2]int64{ruleId, int64(ug.Start)}]-int64(alertCount)+int64(ug.Start))%int64(ug.Period) == 0 || common.RuleCount[[2]int64{ruleId, int64(ug.Start)}]-((common.RuleCount[[2]int64{ruleId, int64(ug.Start)}]-int64(alertCount)+int64(ug.Start))/int64(ug.Period))*int64(ug.Period) >= int64(ug.Period) {
+					sendFlag = true
+				}
+			}
+		}
+	}
+
+	return
 }

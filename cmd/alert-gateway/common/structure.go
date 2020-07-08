@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -19,6 +20,52 @@ var Recover2Send = map[string]map[[2]int64]*Ready2Send{
 
 var Lock sync.Mutex
 var Rw sync.RWMutex
+
+func UpdateRecovery2Send(ug UserGroup, alert Alert, users []string, alertId int64, alertCount int, hostname string) {
+
+	ruleId, _ := strconv.ParseInt(alert.Annotations.RuleId, 10, 64)
+
+	Lock.Lock()
+	defer Lock.Unlock()
+	if _, ok := Recover2Send[ug.Method]; !ok {
+		Recover2Send[ug.Method] = map[[2]int64]*Ready2Send{[2]int64{ruleId, ug.Id}: &Ready2Send{
+			RuleId: ruleId,
+			Start:  ug.Id,
+			User:   users,
+			Alerts: []SingleAlert{SingleAlert{
+				Id:       alertId,
+				Count:    alertCount,
+				Value:    alert.Value,
+				Summary:  alert.Annotations.Summary,
+				Hostname: hostname,
+			}},
+		}}
+	} else {
+		if _, ok := Recover2Send[ug.Method][[2]int64{ruleId, ug.Id}]; !ok {
+			Recover2Send[ug.Method][[2]int64{ruleId, ug.Id}] = &Ready2Send{
+				RuleId: ruleId,
+				Start:  ug.Id,
+				User:   users,
+				Alerts: []SingleAlert{SingleAlert{
+					Id:       alertId,
+					Count:    alertCount,
+					Value:    alert.Value,
+					Summary:  alert.Annotations.Summary,
+					Hostname: hostname,
+					Labels:   alert.Labels,
+				}},
+			}
+		} else {
+			Recover2Send[ug.Method][[2]int64{ruleId, ug.Id}].Alerts = append(Recover2Send[ug.Method][[2]int64{ruleId, ug.Id}].Alerts, SingleAlert{
+				Id:       alertId,
+				Count:    alertCount,
+				Value:    alert.Value,
+				Summary:  alert.Annotations.Summary,
+				Hostname: hostname,
+			})
+		}
+	}
+}
 
 // AuthModel holds information used to authenticate.
 type AuthModel struct {

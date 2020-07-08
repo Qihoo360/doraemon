@@ -358,32 +358,12 @@ func (u *Alerts) AlertsHandler(alert *common.Alerts) {
 	now := time.Now().Format("15:04:05")
 	todayZero, _ := time.ParseInLocation("2006-01-02", "2019-01-01 15:22:22", time.Local)
 	for _, elemt := range *alert {
-		//ruleid, _ := strconv.ParseInt(elemt.Annotations.RuleId, 10, 64)
-		//var orderkey []string
-		//var labels []string
-		//var label string
-		//var firedat time.Time
+
 		var queryres []struct {
 			Id     int64
 			Status uint8
 		}
-		//for key := range elemt.Labels {
-		//	orderkey = append(orderkey, key)
-		//}
-		//sort.Strings(orderkey)
-		//for _, i := range orderkey {
-		//	labels = append(labels, i+"\a"+elemt.Labels[i])
-		//}
-		//hostname := ""
-		//if _, ok := elemt.Labels["instance"]; ok {
-		//	hostname = elemt.Labels["instance"]
-		//	boundary := strings.LastIndex(hostname, ":")
-		//	if boundary != -1 {
-		//		hostname = hostname[:boundary]
-		//	}
-		//}
-		//label = strings.Join(labels, "\v")
-		//firedat = elemt.FiredAt.Truncate(time.Second)
+
 		a := &alertForQuery{Alert: &elemt}
 		a.setFields()
 
@@ -438,55 +418,12 @@ func (u *Alerts) AlertsHandler(alert *common.Alerts) {
 													}
 													if sendFlag {
 														if element.ReversePolishNotation == "" || common.CalculateReversePolishNotation(elemt.Labels, element.ReversePolishNotation) {
-															common.Lock.Lock()
-															if _, ok := common.Recover2Send[element.Method]; !ok {
-																common.Recover2Send[element.Method] = map[[2]int64]*common.Ready2Send{[2]int64{a.ruleId, element.Id}: &common.Ready2Send{
-																	RuleId: a.ruleId,
-																	Start:  element.Id,
-																	User: SendAlertsFor(&common.ValidUserGroup{
-																		User:      element.User,
-																		Group:     element.Group,
-																		DutyGroup: element.DutyGroup,
-																	}),
-																	Alerts: []common.SingleAlert{common.SingleAlert{
-																		Id:       recoverInfo.Id,
-																		Count:    recoverInfo.Count,
-																		Value:    elemt.Value,
-																		Summary:  elemt.Annotations.Summary,
-																		Hostname: recoverInfo.Hostname,
-																	}},
-																}}
-															} else {
-																if _, ok := common.Recover2Send[element.Method][[2]int64{a.ruleId, element.Id}]; !ok {
-																	common.Recover2Send[element.Method][[2]int64{a.ruleId, element.Id}] = &common.Ready2Send{
-																		RuleId: a.ruleId,
-																		Start:  element.Id,
-																		User: SendAlertsFor(&common.ValidUserGroup{
-																			User:      element.User,
-																			Group:     element.Group,
-																			DutyGroup: element.DutyGroup,
-																		}),
-																		Alerts: []common.SingleAlert{common.SingleAlert{
-																			Id:       recoverInfo.Id,
-																			Count:    recoverInfo.Count,
-																			Value:    elemt.Value,
-																			Summary:  elemt.Annotations.Summary,
-																			Hostname: recoverInfo.Hostname,
-																			Labels:   elemt.Labels,
-																		}},
-																	}
-																} else {
-																	common.Recover2Send[element.Method][[2]int64{a.ruleId, element.Id}].Alerts = append(common.Recover2Send[element.Method][[2]int64{a.ruleId, element.Id}].Alerts, common.SingleAlert{
-																		Id:       recoverInfo.Id,
-																		Count:    recoverInfo.Count,
-																		Value:    elemt.Value,
-																		Summary:  elemt.Annotations.Summary,
-																		Hostname: recoverInfo.Hostname,
-																	})
-																}
-															}
-															//logs.Panic.Debug("[%s] %v",common.Recover2Send["LANXIN"])
-															common.Lock.Unlock()
+															users := SendAlertsFor(&common.ValidUserGroup{
+																User:      element.User,
+																Group:     element.Group,
+																DutyGroup: element.DutyGroup,
+															})
+															common.UpdateRecovery2Send(element, elemt, users, recoverInfo.Id, recoverInfo.Count, recoverInfo.Hostname)
 														}
 													}
 												}

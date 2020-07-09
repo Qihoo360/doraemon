@@ -11,10 +11,10 @@ SERVER_BUILD_VERSION :=v1.0.0
 
 # run module
 run-ruleengine:
-	cd cmd/rule-engine/ && export GO111MODULE=on && export GOPROXY=https://mirrors.aliyun.com/goproxy/ && go run main.go --gateway.url=http://$(gateway.url)
+	cd cmd/rule-engine/ && export GO111MODULE=on && export GOPROXY=https://goproxy.cn && go run main.go --gateway.url=http://$(gateway.url)
 
 run-backend:
-	cd cmd/alert-gateway/ && export GO111MODULE=on && export GOPROXY=https://mirrors.aliyun.com/goproxy/ && go run main.go
+	cd cmd/alert-gateway/ && export GO111MODULE=on && export GOPROXY=https://goproxy.cn && go run main.go
 
 run-frontend:
 	cd web/ && npm run dev

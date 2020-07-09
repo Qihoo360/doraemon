@@ -4,6 +4,7 @@ import (
 	"github.com/Qihoo360/doraemon/cmd/alert-gateway/initial"
 	"github.com/Qihoo360/doraemon/pkg/auth/ldaputil"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"github.com/go-ldap/ldap"
 
 	_ "github.com/Qihoo360/doraemon/cmd/alert-gateway/logs"
@@ -31,10 +32,8 @@ func main() {
 
 	cfg, err := beego.AppConfig.GetSection("auth.ldap")
 	if err != nil {
-		panic(err)
-	}
-
-	if cfg["enabled"] == "true" {
+		logs.Warn("ldap config error: %v, ldap will not be supported", err)
+	} else if cfg != nil && cfg["enabled"] == "true" {
 		ldapCfg := ldaputil.LdapConfig{
 			Url:          cfg["ldap_url"],
 			BaseDN:       cfg["ldap_base_dn"],
@@ -43,7 +42,6 @@ func main() {
 			BindPassword: cfg["ldap_search_password"],
 			Filter:       cfg["ldap_filter"],
 		}
-
 		ldaputil.InitLdap(&ldapCfg)
 	}
 

@@ -9,7 +9,7 @@ COPY go.mod /go/src/github.com/Qihoo360/doraemon
 COPY go.sum /go/src/github.com/Qihoo360/doraemon
 
 RUN export GO111MODULE=on && \
-    export GOPROXY=https://mirrors.aliyun.com/goproxy/ && \
+    export GOPROXY=https://goproxy.cn && \
     go build main.go && \
     mv main doraemon && \
     tar cvf pack.tar doraemon conf/

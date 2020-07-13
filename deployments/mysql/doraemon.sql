@@ -121,6 +121,7 @@ CREATE TABLE `doraemon`.`plan_receiver`  (
   `user` varchar(1023) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
   `group` varchar(1023) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
   `duty_group` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `odin_group` varchar(255) NOT NULL DEFAULT '',
   `method` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `plan_receiver_plan_id`(`plan_id`) USING BTREE

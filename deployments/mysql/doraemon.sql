@@ -109,23 +109,23 @@ CREATE TABLE `doraemon`.`plan`  (
 -- Table structure for plan_receiver
 -- ----------------------------
 DROP TABLE IF EXISTS `doraemon`.`plan_receiver`;
-CREATE TABLE `doraemon`.`plan_receiver`  (
+CREATE TABLE `doraemon`.`plan_receiver` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `plan_id` bigint(20) NOT NULL,
-  `start_time` varchar(31) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `end_time` varchar(31) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `start` int(11) NOT NULL DEFAULT 0,
-  `period` int(11) NOT NULL DEFAULT 0,
-  `expression` varchar(1023) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `reverse_polish_notation` varchar(1023) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `user` varchar(1023) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `group` varchar(1023) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `duty_group` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `start_time` varchar(31) NOT NULL DEFAULT '',
+  `end_time` varchar(31) NOT NULL DEFAULT '',
+  `start` int(11) NOT NULL DEFAULT '0',
+  `period` int(11) NOT NULL DEFAULT '0',
+  `expression` varchar(1023) NOT NULL DEFAULT '',
+  `reverse_polish_notation` varchar(1023) NOT NULL DEFAULT '',
+  `user` varchar(1023) NOT NULL DEFAULT '',
+  `group` varchar(1023) NOT NULL DEFAULT '',
+  `duty_group` varchar(255) NOT NULL DEFAULT '',
   `odin_group` varchar(255) NOT NULL DEFAULT '',
-  `method` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `plan_receiver_plan_id`(`plan_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 403 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+  `method` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `plan_receiver_plan_id` (`plan_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for prom
@@ -154,6 +154,53 @@ CREATE TABLE `doraemon`.`rule`  (
   `plan_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 870 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Table structure for inhibit_logs
+-- ----------------------------
+DROP TABLE IF EXISTS `doraemon`.`inhibit_logs`;
+CREATE TABLE `doraemon`.`inhibit_logs` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `alert_id` bigint(20) NOT NULL DEFAULT '0',
+  `summary` varchar(1023) NOT NULL DEFAULT '',
+  `labels` varchar(255) NOT NULL DEFAULT '',
+  `source_expression` varchar(1023) NOT NULL DEFAULT '',
+  `target_expression` varchar(1023) NOT NULL DEFAULT '',
+  `sources` varchar(127) NOT NULL DEFAULT '',
+  `relate_labels` varchar(255) NOT NULL DEFAULT '',
+  `trigger_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for inhibits
+-- ----------------------------
+DROP TABLE IF EXISTS `doraemon`.`inhibits`;
+CREATE TABLE `doraemon`.`inhibits` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `source_expression` varchar(1023) NOT NULL DEFAULT '',
+  `source_reverse_polish_notation` varchar(1023) NOT NULL DEFAULT '',
+  `target_expression` varchar(1023) NOT NULL DEFAULT '',
+  `target_reverse_polish_notation` varchar(1023) NOT NULL DEFAULT '',
+  `labels` varchar(1023) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for logs
+-- ----------------------------
+DROP TABLE IF EXISTS `doraemon`.`logs`;
+CREATE TABLE `doraemon`.`logs` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `target` varchar(255) NOT NULL DEFAULT '',
+  `type` varchar(255) NOT NULL DEFAULT '',
+  `user` varchar(255) NOT NULL DEFAULT '',
+  `param` varchar(1023) NOT NULL DEFAULT '',
+  `create_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for users

@@ -25,7 +25,8 @@ Filter表达式用于根据标签来过滤报警，例如某个规则的报警�
                 "id": 20163,                                                     
                 "count": 14645,                                                  
                 "value": 76.58,                                             
-                "summary": "map_req",                                        
+                "summary": "map_req",
+                "description": "xxx",                                        
                 "hostname": "10.0.0.1",
                 "labels":{
                     "app":"sony",
@@ -37,6 +38,7 @@ Filter表达式用于根据标签来过滤报警，例如某个规则的报警�
                 "count": 13,
                 "value": 74.75,
                 "summary": "map_req",
+                "description": "xxx",                                        
                 "hostname": "10.0.0.2",
                 "labels":{
                     "app":"bison",
@@ -48,6 +50,7 @@ Filter表达式用于根据标签来过滤报警，例如某个规则的报警�
                 "count": 12,
                 "value": 81.83,
                 "summary": "map_req",
+                "description": "xxx",                                        
                 "hostname": "10.0.0.3",
                 "labels":{
                     "app":"one",
@@ -68,7 +71,8 @@ Filter表达式用于根据标签来过滤报警，例如某个规则的报警�
                 "id": 20163,                                                     
                 "count": 14645,                                                  
                 "value": 76.58,                                             
-                "summary": "map_req",                                        
+                "summary": "map_req",
+                "description": "xxx",                                                                                
                 "hostname": "10.0.0.1",
                 "labels":{
                     "app":"sony",
@@ -80,6 +84,7 @@ Filter表达式用于根据标签来过滤报警，例如某个规则的报警�
                 "count": 13,
                 "value": 74.75,
                 "summary": "map_req",
+                "description": "xxx",                                        
                 "hostname": "10.0.0.2",
                 "labels":{
                     "app":"bison",
@@ -91,6 +96,7 @@ Filter表达式用于根据标签来过滤报警，例如某个规则的报警�
                 "count": 12,
                 "value": 81.83,
                 "summary": "map_req",
+                "description": "xxx",                                        
                 "hostname": "10.0.0.3",
                 "labels":{
                     "app":"one",

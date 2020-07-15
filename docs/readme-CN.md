@@ -41,3 +41,4 @@ Doraemon是一个基于 **[Prometheus](https://prometheus.io)** 的监控系统�
 - **[添加维护组](AddMaintainGroup-CN.md)**  
 - **[报警确认](ConfirmAlarms-CN.md)**  
 - **[查看历史报警](ViewHistoricalAlarms-CN.md)**  
+- **[报警抑制](AlarmsInhibit-CN.md)**  

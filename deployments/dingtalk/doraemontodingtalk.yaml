@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: doraemontodingtalk
+  annotations:
+  labels:
+    app: doraemontodingtalk
+  namespace: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: doraemontodingtalk
+  template:
+    metadata:
+      labels:
+        app: doraemontodingtalk
+    spec:
+      containers:
+      - name: doraemontodingtalk
+        image: fangcangorg/doraemontodingtalk:1.0.1
+        imagePullPolicy: Always
+        env:
+        - name: envname       
+          value: "ecbook-test"
+        - name: dingtalk_url
+          value: "https://oapi.dingtalk.com/robot/send?access_token=c4864e43497f7a9a7f26535df0f7cd717b3f3fd04aea826977d0e30d33ab29"
+        - name: secret
+          value: 'SEC60767f9d442fabe68ecf2216139251fe9e99cb9534c8a5be30fd2fdf1530c'
+        resources:
+          requests:
+            cpu: 0.1
+            memory: 128Mi
+          limits:
+            cpu: 0.2
+            memory: 256Mi
+        ports:
+        - containerPort: 8100
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 8100
+          timeoutSeconds: 1
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: doraemontodingtalk
+  namespace: prometheus
+spec:
+  selector:
+    app: doraemontodingtalk
+  ports:
+  - protocol: TCP
+    port: 8100
+    targetPort: 8100

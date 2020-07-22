@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/Qihoo360/doraemon/cmd/alert-gateway/common"
 	"github.com/Qihoo360/doraemon/cmd/alert-gateway/logs"
+	"github.com/Qihoo360/doraemon/pkg/notify"
 	"github.com/astaxie/beego"
 	"runtime"
 	"strconv"
@@ -25,8 +26,17 @@ func Sender(SendClass map[string][]common.Ready2Send, now string) {
 		case common.AlertMethodCall:
 			go SendAll(k, "StreeAlert", map[string]string{"key": "6E358A78-0A5B-49D2-A12F-6A4EB07A9671"}, v, now)
 		default:
-			go Send2Hook(v, now, "alert", k[5:])
+			route3rdChannel(strings.Split(k, " "), v, now)
 		}
+	}
+}
+
+func route3rdChannel(method []string, content []common.Ready2Send, sendTime string) {
+	switch method[0] {
+	case common.AlertMethodHook:
+		go Send2Hook(content, sendTime, "alert", method[1])
+	case common.AlertMethodDingTalk:
+		go notify.Send2DingTalk(content, false, sendTime, method[1], method[2])
 	}
 }
 
@@ -41,12 +51,23 @@ func RecoverSender(SendClass map[string]map[[2]int64]*common.Ready2Send, now str
 	go SendRecover(beego.AppConfig.String("LanxinUrl"), "StreeAlert", map[string]string{"key": "6E358A78-0A5B-49D2-A12F-6A4EB07A9671"}, lanxin, now)
 	//logs.Panic.Info("send[%s]:%v", now, lanxin)
 	delete(SendClass, common.AlertMethodLanxin)
+
 	for k := range SendClass {
-		hook := []common.Ready2Send{}
+		var hook []common.Ready2Send
 		for _, u := range SendClass[k] {
 			hook = append(hook, *u)
 		}
-		go Send2Hook(hook, now, "recover", k[5:])
+		// split by space
+		t := strings.Split(k, " ")
+		// route to special channel
+		switch t[0] {
+		case common.AlertMethodHook:
+			go Send2Hook(hook, now, "recover", t[1])
+		case common.AlertMethodDingTalk:
+			go notify.Send2DingTalk(hook, true, now, t[1], t[2])
+		default:
+			go Send2Hook(hook, now, "recover", k[5:])
+		}
 	}
 }
 

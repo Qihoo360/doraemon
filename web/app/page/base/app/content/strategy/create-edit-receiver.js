@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, message, Form, Input, TimePicker, InputNumber, Select } from 'antd'
+import { Form, Input, InputNumber, message, Modal, Select, TimePicker } from 'antd'
 import { formItemLayout } from '@configs/const'
 import moment from 'moment'
 import { DInput } from '@components/input/input'
@@ -11,6 +11,7 @@ export default class CreateEditReceiver extends Component {
     super(props)
     this.props.OnRef(this)
   }
+
   state = {
     id: 0,
     mode: 'create', // create or edit
@@ -22,27 +23,35 @@ export default class CreateEditReceiver extends Component {
       group: true,
     },
   }
+
   componentDidMount() {
     const { form } = this.props
     form.setFieldsValue()
   }
+
   selectMethod = (value) => {
     // console.log(value)
     this.setState({
       method: value,
     })
   }
+
   updateValue(value) {
     const { form } = this.props
     const { mode, id, ...data } = value
     // console.log(mode)
     // console.log(data.method.substr(0,4))
-    var method = "LANXIN"
+    let method = 'LANXIN'
     if (mode === 'edit') {
-      if (data.method.length >= 4 && data.method.substr(0, 4) === "HOOK") {
-        method = "HOOK"
+      if (data.method.length >= 4 && data.method.substr(0, 4) === 'HOOK') {
+        method = 'HOOK'
         data.hookurl = data.method.substr(5)
-        data.method = "HOOK"
+        data.method = 'HOOK'
+      } else if (data.method.split(' ')[0] === 'DINGTALK') {
+        method = 'DINGTALK'
+        data.dingtalkUrl = data.method.split(' ')[1]
+        data.dingtalkSecret = data.method.split(' ')[2]
+        data.method = 'DINGTALK'
       } else {
         method = data.method
       }
@@ -60,14 +69,18 @@ export default class CreateEditReceiver extends Component {
       },
     })
     form.resetFields()
-    mode === 'edit' && form.setFieldsValue(this.unFormatValue(data))
+    setTimeout(() => {
+      mode === 'edit' && form.setFieldsValue(this.unFormatValue(data))
+    }, 0)
   }
+
   formatValue(values) {
     const { ...value } = values
     value.start_time = moment(value.start_time).format('HH:mm')
     value.end_time = moment(value.end_time).format('HH:mm')
     return value
   }
+
   unFormatValue(values) {
     const { ...value } = values
     value.start_time = moment(value.start_time, 'HH:mm')
@@ -83,18 +96,22 @@ export default class CreateEditReceiver extends Component {
     // console.log(value)
     return value
   }
+
   handleOk = () => {
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
         const { id, mode, method } = this.state
-        if (method === "HOOK") {
-          values.method = values.method + " " + values.hookurl
+        if (method === 'HOOK') {
+          values.method = `${values.method} ${values.hookurl}`
+        }
+        if (method === 'DINGTALK') {
+          values.method = `${values.method} ${values.dingtalkUrl} ${values.dingtalkSecret}`
         }
         const resultSuccess = await this.props.onSubmit({ id, mode, ...this.formatValue(values) })
         if (resultSuccess) {
           message.success(mode === 'edit' ? '编辑成功' : '添加成功')
           this.setState({
-            method: "HOOK",
+            method: 'HOOK',
             visible: false,
           })
         }
@@ -104,7 +121,7 @@ export default class CreateEditReceiver extends Component {
   handleCancel = () => {
     const { form } = this.props
     this.setState({
-      method: "HOOK",
+      method: 'HOOK',
       visible: false,
     })
     // form.resetFields()
@@ -173,106 +190,127 @@ export default class CreateEditReceiver extends Component {
       })
     })
   }
+
   render() {
     const { getFieldDecorator } = this.props.form
     const { mode, visible, groupState } = this.state
 
     return (
-      <Modal
-        title={mode === 'edit' ? '编辑报警策略' : '添加报警策略'}
-        visible={visible}
-        onOk={this.handleOk}
-        onCancel={this.handleCancel}
-        maskClosable={false}
-      >
+        <Modal
+    title={mode === 'edit' ? '编辑报警策略' : '添加报警策略'}
+    visible={visible}
+    onOk={this.handleOk}
+    onCancel={this.handleCancel}
+    maskClosable={false}
+        >
         <Form {...formItemLayout} layout="horizontal" onValuesChange={this.groupChange}>
-          <Form.Item label="报警时间段" style={{ marginBottom: 0 }}>
-            <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 10px)' }}>
-              {getFieldDecorator('start_time', {
-                rules: [{ type: 'object', required: true, message: 'Please select time!' }],
-              })(<TimePicker style={{ width: '100%' }} format="HH:mm" onChange={this.startTimeChange} />)}
-            </Form.Item>
-            <span style={{ display: 'inline-block', width: '20px', textAlign: 'center' }}>~</span>
-            <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 10px)' }}>
-              {getFieldDecorator('end_time', {
-                rules: [
-                  { type: 'object', required: true, message: 'Please select time!' },
-                  // { validator: this.endTimeValid}
-                ],
-              })(<TimePicker style={{ width: '100%' }} format="HH:mm" />)}
-            </Form.Item>
+        <Form.Item label="报警时间段" style={{ marginBottom: 0 }}>
+  <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 10px)' }}>
+    {getFieldDecorator('start_time', {
+      rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+    })(<TimePicker style={{ width: '100%' }} format="HH:mm" onChange={this.startTimeChange} />)}
+    </Form.Item>
+    <span style={{ display: 'inline-block', width: '20px', textAlign: 'center' }}>~</span>
+    <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 10px)' }}>
+      {getFieldDecorator('end_time', {
+        rules: [
+          { type: 'object', required: true, message: 'Please select time!' },
+          // { validator: this.endTimeValid}
+        ],
+      })(<TimePicker style={{ width: '100%' }} format="HH:mm" />)}
+    </Form.Item>
+    </Form.Item>
+    <Form.Item label="报警延迟">
+        {getFieldDecorator('start', {
+      rules: [
+        { required: true, message: '请输入报警延迟' },
+        { validator: this.delayValid },
+      ],
+    })(<InputNumber type="number" style={{ width: '100%' }} />)}
+    </Form.Item>
+    <Form.Item label="报警周期"
+      wrapperCol={{
+      xs: { span: 24 },
+      sm: { span: 16 },
+    }}
+    >
+      {getFieldDecorator('period', {
+        rules: [
+          { required: true, message: '请输入报警周期' },
+          { validator: this.cycleValid },
+        ],
+      })(<InputNumber type="number" style={{ width: 'calc(100% - 20px)' }} />)}
+      <span style={{ width: '20px', display: 'inline-block', textAlign: 'right' }}>分</span>
+      </Form.Item>
+      <Form.Item label="报警用户">
+          {getFieldDecorator('user', {
+        rules: [
+          { required: groupState.user, message: '请输入报警用户' },
+        ],
+      })(<DInput onChange={this.groupChange} />)}
+      </Form.Item>
+      <Form.Item label="值班组">
+          {getFieldDecorator('duty_group', {
+        rules: [
+          { required: groupState.duty_group, message: '请输入报警用户' },
+        ],
+      })(<DInput onChange={this.groupChange} />)}
+      </Form.Item>
+      <Form.Item label="报警用户组">
+          {getFieldDecorator('group', {
+        rules: [
+          { required: groupState.group, message: '请输入报警用户组' },
+        ],
+      })(<DInput onChange={this.groupChange} />)}
+      </Form.Item>
+      <Form.Item label="Filter表达式">
+          {getFieldDecorator('expression', {})(<Input />)}
+      </Form.Item>
+      <Form.Item label="报警方式">
+          {getFieldDecorator('method', {
+        initialValue: 'LANXIN',
+            rules: [
+          { required: true, message: '请输入报警用户组' },
+        ],
+      })(<Select onChange={this.selectMethod}>
+          <Option value="LANXIN">LANXIN</Option>
+          <Option value="CALL">CALL</Option>
+          <Option value="SMS">SMS</Option>
+          <Option value="HOOK">HOOK</Option>
+          <Option value="DINGTALK">DINGTALK</Option>
+          </Select>)}
           </Form.Item>
-          <Form.Item label="报警延迟">
-            {getFieldDecorator('start', {
-              rules: [
-                { required: true, message: '请输入报警延迟' },
-                { validator: this.delayValid },
-              ],
-            })(<InputNumber type="number" style={{ width: '100%' }} />)}
-          </Form.Item>
-          <Form.Item label="报警周期"
-            wrapperCol={{
-              xs: { span: 24 },
-              sm: { span: 16 },
-            }}
-          >
-            {getFieldDecorator('period', {
-              rules: [
-                { required: true, message: '请输入报警周期' },
-                { validator: this.cycleValid },
-              ],
-            })(<InputNumber type="number" style={{ width: 'calc(100% - 20px)' }} />)}
-            <span style={{ width: '20px', display: 'inline-block', textAlign: 'right' }}>分</span>
-          </Form.Item>
-          <Form.Item label="报警用户">
-            {getFieldDecorator('user', {
-              rules: [
-                { required: groupState.user, message: '请输入报警用户' },
-              ],
-            })(<DInput onChange={this.groupChange} />)}
-          </Form.Item>
-          <Form.Item label="值班组">
-            {getFieldDecorator('duty_group', {
-              rules: [
-                { required: groupState.duty_group, message: '请输入报警用户' },
-              ],
-            })(<DInput onChange={this.groupChange} />)}
-          </Form.Item>
-          <Form.Item label="报警用户组">
-            {getFieldDecorator('group', {
-              rules: [
-                { required: groupState.group, message: '请输入报警用户组' },
-              ],
-            })(<DInput onChange={this.groupChange} />)}
-          </Form.Item>
-          <Form.Item label="Filter表达式">
-            {getFieldDecorator('expression', {})(<Input />)}
-          </Form.Item>
-          <Form.Item label="报警方式">
-            {getFieldDecorator('method', {
-              initialValue: 'LANXIN',
-              rules: [
-                { required: true, message: '请输入报警用户组' },
-              ],
-            })(<Select onChange={this.selectMethod}>
-              <Option value="LANXIN">LANXIN</Option>
-              <Option value="CALL">CALL</Option>
-              <Option value="SMS">SMS</Option>
-              <Option value="HOOK">HOOK</Option>
-            </Select>)}
-          </Form.Item>
-          {this.state.method === "HOOK" ?
-            <Form.Item label="HOOK URL">
-              {getFieldDecorator('hookurl', {
-                // initialValue: hookurl,
-                rules: [
-                  { required: true, message: '请输入HOOK URL' },
-                ],
-              })(<Input />)}
-            </Form.Item> : null
-          }
-        </Form>
+        {this.state.method === 'HOOK' ?
+        <Form.Item label="HOOK URL">
+            {getFieldDecorator('hookurl', {
+          // initialValue: hookurl,
+          rules: [
+            { required: true, message: '请输入HOOK URL' },
+          ],
+        })(<Input />)}
+        </Form.Item> : null
+        }
+        {this.state.method === 'DINGTALK' ?
+        <Form.Item label="钉钉机器人URL">
+            {getFieldDecorator('dingtalkUrl', {
+          // initialValue: dingtalkUrl,
+          rules: [
+            { required: true, message: '请输入DINGTALK URL' },
+          ],
+        })(<Input />)}
+        </Form.Item> : null
+        }
+        {this.state.method === 'DINGTALK' ?
+        <Form.Item label="钉钉加签密钥">
+            {getFieldDecorator('dingtalkSecret', {
+          rules: [
+            { required: true, message: '请输入钉钉加签密钥' },
+          ],
+        })(<Input />)}
+        </Form.Item> : null
+        }
+      </Form>
       </Modal>
-    )
-  }
-}
+      )
+      }
+      }

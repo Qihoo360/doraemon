@@ -94,9 +94,9 @@ func UpdateMaintainlist() {
 
 func Filter(alerts map[int64][]Record, maxCount map[int64]int) map[string][]common.Ready2Send {
 	SendClass := map[string][]common.Ready2Send{
-		common.AlertMethodSms:    []common.Ready2Send{},
-		common.AlertMethodLanxin: []common.Ready2Send{},
-		common.AlertMethodCall:   []common.Ready2Send{},
+		common.AlertMethodSms:    {},
+		common.AlertMethodLanxin: {},
+		common.AlertMethodCall:   {},
 		//"HOOK":   []common.Ready2Send{},
 	}
 	Cache := map[int64][]common.UserGroup{}
@@ -241,7 +241,7 @@ func init() {
 				common.Lock.Lock()
 				recover2send := common.Recover2Send
 				common.Recover2Send = map[string]map[[2]int64]*common.Ready2Send{
-					common.AlertMethodLanxin: map[[2]int64]*common.Ready2Send{},
+					common.AlertMethodLanxin: {},
 					//"HOOK":   map[[2]int64]*common.Ready2Send{},
 				}
 				common.Lock.Unlock()

@@ -31,7 +31,7 @@ func (*Maintains) TableName() string {
 
 func (u *Maintains) TableIndex() [][]string {
 	return [][]string{
-		[]string{"Valid", "DayStart", "DayEnd", "Flag", "TimeStart", "TimeEnd"},
+		{"Valid", "DayStart", "DayEnd", "Flag", "TimeStart", "TimeEnd"},
 	}
 }
 

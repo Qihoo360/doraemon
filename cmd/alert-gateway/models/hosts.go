@@ -12,7 +12,7 @@ func (*Hosts) TableName() string {
 
 func (u *Hosts) TableUnique() [][]string {
 	return [][]string{
-		[]string{"Mid", "Hostname"},
+		{"Mid", "Hostname"},
 	}
 }
 

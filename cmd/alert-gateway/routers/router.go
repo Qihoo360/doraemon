@@ -32,10 +32,16 @@ var FilterUser = func(ctx *context.Context) {
 	//	Error string  `json:"error"`
 	//}{"invalid request"},false,false)
 	//fmt.Println(ctx.Request.Method)
-	if (len(ctx.Request.RequestURI) >= 13 && ctx.Request.RequestURI[:13] == "/api/v1/proms" && ctx.Request.Method == "GET" || len(ctx.Request.RequestURI) >= 13 && ctx.Request.RequestURI[:13] == "/api/v1/rules" && ctx.Request.Method == "GET" || len(ctx.Request.RequestURI) >= 14 && ctx.Request.RequestURI[:14] == "/api/v1/alerts" && ctx.Request.Method == "POST") && ctx.Input.Header("Token") == "96smhbNpRguoJOCEKNrMqQ" {
+	req := ctx.Request
+	requestURI := req.RequestURI
+	method := req.Method
+
+	if ((method == "GET" && len(requestURI) >= 13 && (requestURI[:13] == "/api/v1/proms" || requestURI[:13] == "/api/v1/rules")) ||
+		(method == "POST" && len(requestURI) >= 14 && requestURI[:14] == "/api/v1/alerts")) &&
+		ctx.Input.Header("Token") == "96smhbNpRguoJOCEKNrMqQ" {
 		return
 	}
-	if len(ctx.Request.RequestURI) >= 14 && ctx.Request.RequestURI[:14] == "/api/v1/logout" {
+	if len(requestURI) >= 14 && requestURI[:14] == "/api/v1/logout" {
 		return
 	}
 	username, _ := ctx.Input.Session("username").(string)

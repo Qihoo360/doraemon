@@ -5,429 +5,421 @@ import (
 	"github.com/astaxie/beego/context/param"
 )
 
+const baseControllers = "github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers"
+
 func init() {
 
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:AlertController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:AlertController"],
-		beego.ControllerComments{
+	beego.GlobalControllerRouter[baseControllers+":AlertController"] = []beego.ControllerComments{
+		{
 			Method:           "GetAlerts",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:AlertController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:AlertController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "Confirm",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"put"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:AlertController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:AlertController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "HandleAlerts",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:AlertController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:AlertController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "ClassifyAlerts",
 			Router:           `/classify`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:AlertController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:AlertController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "ShowAlerts",
 			Router:           `/rules/:ruleid`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
+			Params:           nil,
+		},
+	}
 
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ConfigController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ConfigController"],
-		beego.ControllerComments{
+	beego.GlobalControllerRouter[baseControllers+":ConfigController"] = []beego.ControllerComments{
+		{
 			Method:           "GetAll",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ConfigController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ConfigController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "AddConfig",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ConfigController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ConfigController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "UpdateConfig",
 			Router:           `/:id`,
 			AllowHTTPMethods: []string{"put"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ConfigController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ConfigController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "DeleteConfig",
 			Router:           `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
+			Params:           nil,
+		},
+	}
 
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:GroupController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:GroupController"],
-		beego.ControllerComments{
+	beego.GlobalControllerRouter[baseControllers+":GroupController"] = []beego.ControllerComments{
+		{
+
 			Method:           "GetAllGroup",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:GroupController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:GroupController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "AddGroup",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:GroupController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:GroupController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "UpdateGroup",
 			Router:           `/:id`,
 			AllowHTTPMethods: []string{"put"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:GroupController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:GroupController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "DeleteGroup",
 			Router:           `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
+			Params:           nil,
+		},
+	}
 
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:LoginController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:LoginController"],
-		beego.ControllerComments{
+	beego.GlobalControllerRouter[baseControllers+":LoginController"] = []beego.ControllerComments{
+		{
 			Method:           "Local",
 			Router:           `/local`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:LoginController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:LoginController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "Ldap",
 			Router:           `/ldap`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:LoginController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:LoginController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "GetMethod",
 			Router:           `/method`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:LoginController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:LoginController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "GetCurrentUser",
 			Router:           `/username`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
+			Params:           nil,
+		},
+	}
 
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:LogoutController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:LogoutController"],
-		beego.ControllerComments{
+	beego.GlobalControllerRouter[baseControllers+":LogoutController"] = []beego.ControllerComments{
+		{
 			Method:           "Logout",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
+			Params:           nil,
+		},
+	}
 
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:MaintainController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:MaintainController"],
-		beego.ControllerComments{
+	beego.GlobalControllerRouter[baseControllers+":MaintainController"] = []beego.ControllerComments{
+		{
 			Method:           "GetAllMaintains",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:MaintainController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:MaintainController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "AddMaintain",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:MaintainController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:MaintainController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "UpdateMaintain",
 			Router:           `/:id`,
 			AllowHTTPMethods: []string{"put"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:MaintainController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:MaintainController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "DeleteMaintain",
 			Router:           `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:MaintainController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:MaintainController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "GetHosts",
 			Router:           `/:id/hosts`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
+			Params:           nil,
+		},
+	}
 
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ManageController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ManageController"],
-		beego.ControllerComments{
+	beego.GlobalControllerRouter[baseControllers+":ManageController"] = []beego.ControllerComments{
+		{
 			Method:           "GetAll",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ManageController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ManageController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "AddManage",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ManageController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ManageController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "UpdateManage",
 			Router:           `/:id`,
 			AllowHTTPMethods: []string{"put"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ManageController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ManageController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "DeleteManage",
 			Router:           `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
+			Params:           nil,
+		},
+	}
 
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PlanController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PlanController"],
-		beego.ControllerComments{
+	beego.GlobalControllerRouter[baseControllers+":PlanController"] = []beego.ControllerComments{
+		{
 			Method:           "GetAllPlans",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PlanController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PlanController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "AddPlan",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PlanController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PlanController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "UpdatePlan",
 			Router:           `/:planid`,
 			AllowHTTPMethods: []string{"put"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PlanController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PlanController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "DeletePlan",
 			Router:           `/:planid`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PlanController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PlanController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "GetAllReceiver",
 			Router:           `/:planid/receivers/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PlanController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PlanController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "AddReceiver",
 			Router:           `/:planid/receivers/`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
+			Params:           nil,
+		},
+	}
 
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PromController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PromController"],
-		beego.ControllerComments{
+	beego.GlobalControllerRouter[baseControllers+":PromController"] = []beego.ControllerComments{
+		{
 			Method:           "GetAllProms",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PromController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PromController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "AddProm",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PromController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PromController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "UpdateProm",
 			Router:           `/:id`,
 			AllowHTTPMethods: []string{"put"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PromController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:PromController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "DeleteProm",
 			Router:           `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
+			Params:           nil,
+		},
+	}
 
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ReceiverController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ReceiverController"],
-		beego.ControllerComments{
+	beego.GlobalControllerRouter[baseControllers+":ReceiverController"] = []beego.ControllerComments{
+		{
 			Method:           "UpdateReceiver",
 			Router:           `/:receiverid`,
 			AllowHTTPMethods: []string{"put"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ReceiverController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:ReceiverController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "DeleteReceiver",
 			Router:           `/:receiverid`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
+			Params:           nil,
+		},
+	}
 
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:RuleController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:RuleController"],
-		beego.ControllerComments{
+	beego.GlobalControllerRouter[baseControllers+":RuleController"] = []beego.ControllerComments{
+		{
 			Method:           "SendAllRules",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:RuleController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:RuleController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "AddRule",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:RuleController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:RuleController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "UpdateRule",
 			Router:           `/:ruleid`,
 			AllowHTTPMethods: []string{"put"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:RuleController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:RuleController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "DeleteRule",
 			Router:           `/:ruleid`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
+			Params:           nil,
+		},
+	}
 
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:UserController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:UserController"],
-		beego.ControllerComments{
+	beego.GlobalControllerRouter[baseControllers+":UserController"] = []beego.ControllerComments{
+		{
 			Method:           "GetAllUser",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:UserController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:UserController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "AddUser",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:UserController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:UserController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "UpdatePassword",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"put"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
-
-	beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:UserController"] = append(beego.GlobalControllerRouter["github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers:UserController"],
-		beego.ControllerComments{
+			Params:           nil,
+		},
+		{
 			Method:           "DeleteUsers",
 			Router:           `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
-			Params:           nil})
+			Params:           nil,
+		},
+	}
 
 }

@@ -286,7 +286,7 @@ func (u *Alerts) ConfirmAll(confirmList *common.Confirm) error {
 		} else {
 			const AlertStatusOn = 2
 			if rs.Status == AlertStatusOn {
-				_, err = o.Raw("UPDATE alert SET status=1,confirmed_at=?,confirmed_by=?,confirmed_before=? WHERE id=?", now.Format("2006-01-02 15:04:05"), confirmList.User, now.Add(time.Duration(confirmList.Duration) * time.Minute).Format("2006-01-02 15:04:05"), id).Exec()
+				_, err = o.Raw("UPDATE alert SET status=1,confirmed_at=?,confirmed_by=?,confirmed_before=? WHERE id=?", now.Format("2006-01-02 15:04:05"), confirmList.User, now.Add(time.Duration(confirmList.Duration)*time.Minute).Format("2006-01-02 15:04:05"), id).Exec()
 				if err != nil {
 					o.Rollback()
 					return errors.Wrap(err, "database update error")

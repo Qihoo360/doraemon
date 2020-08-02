@@ -14,7 +14,7 @@ var ErrHttpRequest = errors.New("create HTTP request failed")
 var Maintain map[string]bool
 var RuleCount map[[2]int64]int64
 var Recover2Send = map[string]map[[2]int64]*Ready2Send{
-	AlertMethodLanxin: map[[2]int64]*Ready2Send{},
+	AlertMethodLanxin: {},
 	//"HOOK":   map[[2]int64]*Ready2Send{},
 }
 
@@ -28,11 +28,11 @@ func UpdateRecovery2Send(ug UserGroup, alert Alert, users []string, alertId int6
 	Lock.Lock()
 	defer Lock.Unlock()
 	if _, ok := Recover2Send[ug.Method]; !ok {
-		Recover2Send[ug.Method] = map[[2]int64]*Ready2Send{[2]int64{ruleId, ug.Id}: &Ready2Send{
+		Recover2Send[ug.Method] = map[[2]int64]*Ready2Send{{ruleId, ug.Id}: {
 			RuleId: ruleId,
 			Start:  ug.Id,
 			User:   users,
-			Alerts: []SingleAlert{SingleAlert{
+			Alerts: []SingleAlert{{
 				Id:       alertId,
 				Count:    alertCount,
 				Value:    alert.Value,
@@ -46,7 +46,7 @@ func UpdateRecovery2Send(ug UserGroup, alert Alert, users []string, alertId int6
 				RuleId: ruleId,
 				Start:  ug.Id,
 				User:   users,
-				Alerts: []SingleAlert{SingleAlert{
+				Alerts: []SingleAlert{{
 					Id:       alertId,
 					Count:    alertCount,
 					Value:    alert.Value,

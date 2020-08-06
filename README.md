@@ -2,7 +2,7 @@
 
 # Doraemon
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![License](http://img.shields.io/badge/license-GPLv3+-brightgreen.svg)](LICENSE)
 
 Doraemon is a **[Prometheus](https://prometheus.io)** based monitor system ,which are made up of three components——the Rule Engine,the Alert Gateway and the Web-UI.Instead of configuring alarm rules in config file,this system can configure alarm rules dynamically through the Web-UI and integrates many customized alarm functions.
 

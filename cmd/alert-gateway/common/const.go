@@ -5,6 +5,7 @@ const (
 	AlertMethodLanxin   = "LANXIN"
 	AlertMethodCall     = "CALL"
 	AlertMethodHook     = "HOOK"
+	AlertMethodDingTalk = "DINGTALK"
 )
 
 const (

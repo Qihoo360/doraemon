@@ -54,7 +54,7 @@ func (*InhibitLog) GetInhibitLogs(pageNo int64, pageSize int64, timeStart string
 		qs = qs.Filter("fired_at__lte", timeEnd)
 	}
 
-	// ´¦ÀíÍê²éÑ¯Ìõ¼şÖ®ºó
+	// å¤„ç†å®ŒæŸ¥è¯¢æ¡ä»¶ä¹‹å
 	showInhibitLogs.Total, _ = qs.Count()
 	qs.Limit(pageSize).Offset((pageNo-1)*pageSize).All(&showInhibitLogs.InhibitLogs)
 

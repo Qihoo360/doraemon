@@ -101,9 +101,9 @@ func (*Rules) Get(prom string, id string) []Rules {
 	qs := Ormer().QueryTable(new(Rules))
 	cond := orm.NewCondition()
 	if prom != "" {
-		qs = qs.SetCond(cond.And("profile__prom_id__eq", prom))
+		qs = qs.SetCond(cond.And("prom_id__eq", prom))
 	} else if id != ""{
-		qs = qs.SetCond(cond.And("profile__id__eq", id))
+		qs = qs.SetCond(cond.And("id__eq", id))
 	}
 
 	qs.Limit(-1).All(&rules)

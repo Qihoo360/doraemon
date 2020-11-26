@@ -12,10 +12,11 @@ type InhibitLog struct {
 	Id            			int64      `orm:"column(id);auto" json:"id,omitempty"`
 	AlertId					int64		`orm:"column(alert_id);" json:"alert_id"`
 	Summary        			string     `orm:"column(summary);size(1023)" json:"summary"`
-	Labels        			string     `orm:"column(labels);size(255)" json:"labels"`
+	Labels        			string     `orm:"column(labels);size(1023)" json:"labels"`
 	SourceExpression        string     `orm:"column(source_expression);size(1023)" json:"source_expression"`
 	Targetxpression        	string     `orm:"column(target_expression);size(1023)" json:"target_expression"`
 	RelateLabels   			string     `orm:"column(relate_labels);size(255)" json:"relate_labels"`
+	Sources   				string     `orm:"column(sources);size(127)" json:"sources"`
 	TriggerTime		        *time.Time `orm:"type(datetime)" json:"trigger_time"`
 }
 

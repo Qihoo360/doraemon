@@ -28,6 +28,8 @@ func init() {
 		//new(Labels),
 		//new(RuleLabels),
 		//new(Expressions),
+		new(Inhibits),
+		new(InhibitLog),
 	)
 
 }

@@ -15,4 +15,7 @@
 doraemon 的动态配置告警规则能力，来自相对独立的 rule-engine：其负责实现 QueryFunc、NotifyFunc + 定期对 Promethues 进行reload
 
 
+-------------------------
+另：
+  [这是一个相关项目](https://github.com/huangwei2013/myruleengine),延伸自 doraemon的 rule-engine，用于与 promethues-alertmanager 结合
 

@@ -361,6 +361,10 @@ func (u *Alerts) AlertsHandler(alert *common.Alerts) {
 			Id     int64
 			Status uint8
 		}
+		var delAlerts []struct {
+			Id     int64
+			Status uint8
+		}
 
 		a := &alertForQuery{Alert: &elemt}
 		a.setFields()
@@ -381,6 +385,18 @@ func (u *Alerts) AlertsHandler(alert *common.Alerts) {
 					continue
 				}
 			} else {
+				//插入新告警之前，将老的告警的status字段该为3，3不会发告警
+				_, err := Ormer().Raw("SELECT id,status FROM alert WHERE rule_id =? AND labels=? AND status !=?", a.ruleId, a.label, 0).QueryRows(&delAlerts)
+				if len(delAlerts) > 0 {
+					//之前未解决的告警记录，需要删掉
+					for _, id := range delAlerts {
+						//_, err = Ormer().Raw("DELETE FROM alert WHERE id=?", id.Id).Exec()
+						_, err = Ormer().Raw("UPDATE  alert SET status =? WHERE id=?", 3, id.Id).Exec()
+						if err != nil {
+							logs.Error("database delete alert error:%s\n", err)
+						}
+					}
+				}
 				// insert an new alert
 				var alert Alerts
 				alert.Id = 0 //reset the "Id" to 0,which is very important:after a record is inserted,the value of "Id" will not be 0,but the auto primary key of the record
@@ -396,7 +412,7 @@ func (u *Alerts) AlertsHandler(alert *common.Alerts) {
 				alert.ConfirmedAt = &todayZero
 				alert.ConfirmedBefore = &todayZero
 				alert.ResolvedAt = &todayZero
-				_, err := Ormer().Insert(&alert)
+				_, err = Ormer().Insert(&alert)
 				if err != nil {
 					logs.Error("Insert alter failed:%s", err)
 				}

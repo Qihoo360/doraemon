@@ -14,6 +14,20 @@
 
 doraemon 的动态配置告警规则能力，来自相对独立的 rule-engine：其负责实现 QueryFunc、NotifyFunc + 定期对 Promethues 进行reload
 
+# 编译
+
+```cassandraql
+git clone https://github.com/huangwei2013/doraemon.git
+cd doraemon
+touch go.sum
+
+make build-backend-image
+make build-frontend-image
+make build-ruleengine-image
+
+
+
+```
 
 -------------------------
 另：

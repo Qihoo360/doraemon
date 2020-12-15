@@ -1,12 +1,12 @@
 FROM golang:1.12 as backend
 
-WORKDIR /go/src/github.com/Qihoo360/doraemon/cmd/alert-gateway
+WORKDIR /go/src/github.com/huangwei2013/doraemon/cmd/alert-gateway
 
 COPY cmd/alert-gateway .
 
-COPY go.mod /go/src/github.com/Qihoo360/doraemon
+COPY go.mod /go/src/github.com/huangwei2013/doraemon
 
-COPY go.sum /go/src/github.com/Qihoo360/doraemon
+COPY go.sum /go/src/github.com/huangwei2013/doraemon
 
 RUN export GO111MODULE=on && \
     export GOPROXY=https://goproxy.cn && \
@@ -18,7 +18,7 @@ FROM 360cloud/centos:7
 
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
-COPY --from=backend /go/src/github.com/Qihoo360/doraemon/cmd/alert-gateway/pack.tar /opt/doraemon/
+COPY --from=backend /go/src/github.com/huangwei2013/doraemon/cmd/alert-gateway/pack.tar /opt/doraemon/
 
 WORKDIR /opt/doraemon/
 

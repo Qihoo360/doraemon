@@ -11,13 +11,13 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     apk add git make && \
     rm -rf /var/cache/apk/*
 
-WORKDIR /go/src/github.com/Qihoo360/doraemon/cmd/rule-engine
+WORKDIR /go/src/github.com/huangwei2013/doraemon/cmd/rule-engine
 
 COPY cmd/rule-engine .
 
-COPY go.mod /go/src/github.com/Qihoo360/doraemon
+COPY go.mod /go/src/github.com/huangwei2013/doraemon
 
-COPY go.sum /go/src/github.com/Qihoo360/doraemon
+COPY go.sum /go/src/github.com/huangwei2013/doraemon
 
 RUN export GO111MODULE=on && \
     export GOPROXY=https://mirrors.aliyun.com/goproxy/ && \
@@ -34,6 +34,6 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 
 WORKDIR /data
 
-COPY --from=builder /go/src/github.com/Qihoo360/doraemon/cmd/rule-engine/main ruleengine
+COPY --from=builder /go/src/github.com/huangwei2013/doraemon/cmd/rule-engine/main ruleengine
 
 ENTRYPOINT ["./ruleengine"]

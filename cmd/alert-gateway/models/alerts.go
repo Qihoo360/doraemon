@@ -361,7 +361,7 @@ func (u *Alerts) AlertsHandler(alert *common.Alerts) {
 			Id     int64
 			Status uint8
 		}
-		var delAlerts []struct {
+		var updateAlerts []struct {
 			Id     int64
 			Status uint8
 		}
@@ -385,15 +385,15 @@ func (u *Alerts) AlertsHandler(alert *common.Alerts) {
 					continue
 				}
 			} else {
-				//插入新告警之前，将老的告警的status字段该为3，3不会发告警
-				_, err := Ormer().Raw("SELECT id,status FROM alert WHERE rule_id =? AND labels=? AND status !=?", a.ruleId, a.label, 0).QueryRows(&delAlerts)
-				if len(delAlerts) > 0 {
-					//之前未解决的告警记录，需要删掉
-					for _, id := range delAlerts {
+				//插入新告警之前，将老的告警的status字段update为3，3不会发告警
+				_, err := Ormer().Raw("SELECT id,status FROM alert WHERE rule_id =? AND labels=? AND status !=?", a.ruleId, a.label, 0).QueryRows(&updateAlerts)
+				if len(updateAlerts) > 0 {
+					//old alert ，updaate status
+					for _, id := range updateAlerts {
 						//_, err = Ormer().Raw("DELETE FROM alert WHERE id=?", id.Id).Exec()
 						_, err = Ormer().Raw("UPDATE  alert SET status =? WHERE id=?", 3, id.Id).Exec()
 						if err != nil {
-							logs.Error("database delete alert error:%s\n", err)
+							logs.Error("database update alert error:%s\n", err)
 						}
 					}
 				}

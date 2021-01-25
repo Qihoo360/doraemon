@@ -28,8 +28,10 @@ make build-ruleengine-image
 
 
 ```
-
--------------------------
-另：
+# 额外说明
+## 另：
   [这是一个相关项目](https://github.com/huangwei2013/myruleengine),延伸自 doraemon的 rule-engine，用于与 promethues-alertmanager 结合
-
+  
+  
+## 再另：
+  prometheus 是因为没有动态加载 rule 规则的能力，才有 360 这个项目的生存空间，所以。。。。。参看[这个](https://github.com/huangwei2013/prometheus)，基于prometheus的改造

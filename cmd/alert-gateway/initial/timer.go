@@ -2,6 +2,7 @@ package initial
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/astaxie/beego/orm"
 	"io/ioutil"
 	"math"
@@ -36,6 +37,19 @@ func (r Record) getLabelMap() map[string]string {
 		for _, j := range strings.Split(r.Labels, "\v") {
 			kv := strings.Split(j, "\a")
 			labelMap[kv[0]] = kv[1]
+		}
+	}
+
+	return labelMap
+}
+
+func (r Record) getLabelBoolMap() map[string]bool {
+	labelMap := map[string]bool{}
+	if r.Labels != "" {
+		for _, j := range strings.Split(r.Labels, "\v") {
+			kv := strings.Split(j, "\a")
+			k := fmt.Sprintf("%s=%s",kv[0],kv[1])
+			labelMap[k] = true
 		}
 	}
 
@@ -114,38 +128,37 @@ func Filter(alerts map[int64][]Record, maxCount map[int64]int) map[string][]comm
 			Cache[planId.PlanId] = usergroupList
 		}
 		for _, element := range Cache[planId.PlanId] {
-			if element.IsValid() && element.IsOnDuty() {
-				if maxCount[key] >= element.Start {
-					k := [2]int64{key, int64(element.Start)}
-					if _, ok := common.RuleCount[k]; !ok {
-						NewRuleCount[k] = -1
-					} else {
-						NewRuleCount[k] = common.RuleCount[k]
-					}
-					NewRuleCount[k] += 1
+			if !element.IsValid() || !element.IsOnDuty() {	break }
+			if maxCount[key] < element.Start	{ break }
 
-					if NewRuleCount[k]%int64(element.Period) == 0 {
-						// add alerts to AlertsMap
-						if _, ok := AlertsMap[element.Start]; !ok {
-							putToAlertMap(AlertsMap, element, alerts[key])
-						}
-						// forward alerts in AlertsMap to SendClass
-						if len(AlertsMap[element.Start]) > 0 {
-							var filteredAlerts []common.SingleAlert
-							if element.ReversePolishNotation == "" {
-								filteredAlerts = AlertsMap[element.Start]
-							} else {
-								for _, alert := range AlertsMap[element.Start] {
-									if common.CalculateReversePolishNotation(alert.Labels, element.ReversePolishNotation) {
-										filteredAlerts = append(filteredAlerts, alert)
-									}
-								}
-							}
-							putToSendClass(SendClass, key, element, filteredAlerts)
+			k := [2]int64{key, int64(element.Start)}
+			if _, ok := common.RuleCount[k]; !ok {
+				NewRuleCount[k] = 0
+			} else {
+				NewRuleCount[k] = 1 + common.RuleCount[k]
+			}
+			if NewRuleCount[k]%int64(element.Period) != 0	{ break	}
+
+			// add alerts to AlertsMap
+			if _, ok := AlertsMap[element.Start]; !ok {
+				putToAlertMap(AlertsMap, element, alerts[key])
+			}
+			// forward alerts in AlertsMap to SendClass
+			if len(AlertsMap[element.Start]) > 0 {
+				var filteredAlerts []common.SingleAlert
+				if element.ReversePolishNotation == "" {
+					filteredAlerts = AlertsMap[element.Start]
+				} else {
+					for _, alert := range AlertsMap[element.Start] {
+						if common.CalculateReversePolishNotation(alert.Labels, element.ReversePolishNotation) {
+							filteredAlerts = append(filteredAlerts, alert)
 						}
 					}
 				}
+				putToSendClass(SendClass, key, element, filteredAlerts)
 			}
+
+
 		}
 	}
 	common.RuleCount = NewRuleCount
@@ -200,9 +213,9 @@ func init() {
 	}()
 	go func() {
 		for {
-			//time.Sleep(time.Second)
 			current := time.Now()
 			time.Sleep(time.Duration(60-current.Second()) * time.Second)
+
 			now := time.Now().Format("2006-01-02 15:04:05")
 			go func() {
 				defer func() {
@@ -220,6 +233,9 @@ func init() {
 				o.Raw("UPDATE alert SET count=count+1 WHERE status!=0").Exec()
 				o.Raw("SELECT id,rule_id,value,count,summary,description,hostname,confirmed_before,fired_at,labels FROM alert WHERE status = ?", 2).QueryRows(&info)
 				//filter alerts...
+
+				info = toInhibit(info) // update alerts to new set
+
 				aggregation := map[int64][]Record{}
 				maxCount := map[int64]int{}
 				for _, i := range info {
@@ -251,3 +267,98 @@ func init() {
 		}
 	}()
 }
+
+
+func toInhibit(alerts []Record) []Record{
+	// Inhibit处理
+	/*
+		1.查询 inhibit 规则
+		2.解析 alerts 的 labels 成 k-v 结构
+		3.匹配 alerts 的labels
+			- vs inhibit.source_expression,将命中的 alerts 记录到 alert_source，结构为{"alert_id":xx, "inhibit":{xx},"target_alert":{xx}}
+			- vs inhibit.target_expression,将命中的 alerts 记录到 alert_target
+		4.将被抑制的，保存到 inhibit_log
+
+	*/
+
+	type AlertWithLables struct {
+		alert    Record
+		labelsMap   map[string]bool
+	}
+
+	type SourceAlert struct {
+		alert AlertWithLables
+		inhibit models.Inhibits
+	}
+	var inhibits []models.Inhibits
+	o := orm.NewOrm()
+	o.Raw("SELECT * FROM inhibits").QueryRows(&inhibits)
+	if nil == inhibits {
+		return alerts
+	}
+
+	var alerts2Send []Record
+	var alertWithLabels []AlertWithLables
+	for _, alert := range alerts {
+		var alertWithLable AlertWithLables
+		alertWithLable.alert = alert
+		alertWithLable.labelsMap = alert.getLabelBoolMap()
+
+		alertWithLabels = append(alertWithLabels, alertWithLable)
+	}
+
+	sourceAlerts := map[string][]SourceAlert{}
+	for _, alert := range alertWithLabels {
+		for _ , inhibit := range inhibits {
+
+			// 源匹配
+			if _, ok := alert.labelsMap[inhibit.SourceExpression]; ok {
+				if _, ok2 := sourceAlerts[inhibit.Targetxpression]; !ok2 {
+					//sourceAlerts[inhibit.Targetxpression][0] = SourceAlert{alert: alert, inhibit:inhibit}
+					sourceAlerts[inhibit.Targetxpression] = []SourceAlert{}
+				}
+				sourceAlerts[inhibit.Targetxpression] = append(sourceAlerts[inhibit.Targetxpression] , SourceAlert{alert: alert, inhibit:inhibit} )
+			}
+		}
+	}
+
+	curTime, _ := time.ParseInLocation("2019-01-01 15:22:22", time.Now().String(), time.Local)
+	inhibitlogsMap := map[int64]models.InhibitLog{}
+	for _, alertWithLabel := range alertWithLabels {
+		for targetExpression, sourceAlertArr := range sourceAlerts {
+			for _, sourceAlert := range sourceAlertArr {
+				if _, ok := alertWithLabel.labelsMap[targetExpression]; ok {// to inhibit
+					if _, ok2 := inhibitlogsMap[alertWithLabel.alert.Id]; !ok2 {
+						var il models.InhibitLog
+						il.Id = 0
+						il.AlertId = alertWithLabel.alert.Id
+						il.Summary = alertWithLabel.alert.Summary
+						il.SourceExpression = sourceAlert.inhibit.SourceExpression
+						il.Targetxpression = targetExpression
+						il.Labels = alertWithLabel.alert.Labels
+						il.RelateLabels = "" // unknown
+						il.TriggerTime = &curTime
+						il.Sources = strconv.Itoa(int(sourceAlert.alert.alert.Id))
+
+						inhibitlogsMap[alertWithLabel.alert.Id] = il
+					} else {
+						var il = inhibitlogsMap[alertWithLabel.alert.Id]
+						il.Sources += "," + strconv.Itoa(int(sourceAlert.alert.alert.Id))
+						inhibitlogsMap[alertWithLabel.alert.Id] = il
+					}
+				} else {
+					// NOTE: no-inhibit alerts, continue to Send
+					alerts2Send = append(alerts2Send, alertWithLabel.alert)
+				}
+			}
+		}
+	}
+
+	for _, inhibit_log := range inhibitlogsMap {
+		inhibit_log.InsertInhibitLog()
+	}
+
+	return alerts2Send
+}
+
+

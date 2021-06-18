@@ -354,7 +354,7 @@ func init() {
 
 	beego.GlobalControllerRouter[baseControllers+":RuleController"] = []beego.ControllerComments{
 		{
-			Method:           "SendAllRules",
+			Method:           "GetAllRules",
 			Router:           `/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams:     param.Make(),

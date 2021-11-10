@@ -13,15 +13,11 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 
 WORKDIR /go/src/github.com/huangwei2013/doraemon/cmd/rule-engine
 
-COPY cmd/rule-engine .
-
-COPY go.mod /go/src/github.com/huangwei2013/doraemon
-
-COPY go.sum /go/src/github.com/huangwei2013/doraemon
+COPY . .
 
 RUN export GO111MODULE=on && \
     export GOPROXY=https://mirrors.aliyun.com/goproxy/ && \
-    go build main.go
+    go build cmd/rule-engine/main.go
 
 FROM alpine:latest
 

@@ -2,17 +2,13 @@ FROM golang:1.12 as backend
 
 WORKDIR /go/src/github.com/huangwei2013/doraemon/cmd/alert-gateway
 
-COPY cmd/alert-gateway .
-
-COPY go.mod /go/src/github.com/huangwei2013/doraemon
-
-COPY go.sum /go/src/github.com/huangwei2013/doraemon
+COPY . .
 
 RUN export GO111MODULE=on && \
     export GOPROXY=https://goproxy.cn && \
-    go build main.go && \
+    go build cmd/alert-gateway/main.go && \
     mv main doraemon && \
-    tar cvf pack.tar doraemon conf/
+    tar cvf pack.tar doraemon cmd/alert-gateway/conf/
 
 FROM 360cloud/centos:7
 

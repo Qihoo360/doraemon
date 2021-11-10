@@ -1,4 +1,4 @@
-module github.com/Qihoo360/doraemon
+module doraemon
 
 go 1.12
 

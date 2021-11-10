@@ -3,7 +3,6 @@ package initial
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/astaxie/beego/orm"
 	"io/ioutil"
 	"math"
 	"runtime"
@@ -11,11 +10,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/astaxie/beego/orm"
+
 	"github.com/astaxie/beego"
 
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/common"
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/logs"
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/models"
+	"doraemon/cmd/alert-gateway/common"
+	"doraemon/cmd/alert-gateway/logs"
+	"doraemon/cmd/alert-gateway/models"
 )
 
 type Record struct {
@@ -48,7 +49,7 @@ func (r Record) getLabelBoolMap() map[string]bool {
 	if r.Labels != "" {
 		for _, j := range strings.Split(r.Labels, "\v") {
 			kv := strings.Split(j, "\a")
-			k := fmt.Sprintf("%s=%s",kv[0],kv[1])
+			k := fmt.Sprintf("%s=%s", kv[0], kv[1])
 			labelMap[k] = true
 		}
 	}
@@ -128,8 +129,12 @@ func Filter(alerts map[int64][]Record, maxCount map[int64]int) map[string][]comm
 			Cache[planId.PlanId] = usergroupList
 		}
 		for _, element := range Cache[planId.PlanId] {
-			if !element.IsValid() || !element.IsOnDuty() {	break }
-			if maxCount[key] < element.Start	{ break }
+			if !element.IsValid() || !element.IsOnDuty() {
+				break
+			}
+			if maxCount[key] < element.Start {
+				break
+			}
 
 			k := [2]int64{key, int64(element.Start)}
 			if _, ok := common.RuleCount[k]; !ok {
@@ -137,7 +142,9 @@ func Filter(alerts map[int64][]Record, maxCount map[int64]int) map[string][]comm
 			} else {
 				NewRuleCount[k] = 1 + common.RuleCount[k]
 			}
-			if NewRuleCount[k]%int64(element.Period) != 0	{ break	}
+			if NewRuleCount[k]%int64(element.Period) != 0 {
+				break
+			}
 
 			// add alerts to AlertsMap
 			if _, ok := AlertsMap[element.Start]; !ok {
@@ -157,7 +164,6 @@ func Filter(alerts map[int64][]Record, maxCount map[int64]int) map[string][]comm
 				}
 				putToSendClass(SendClass, key, element, filteredAlerts)
 			}
-
 
 		}
 	}
@@ -268,8 +274,7 @@ func init() {
 	}()
 }
 
-
-func toInhibit(alerts []Record) []Record{
+func toInhibit(alerts []Record) []Record {
 	// Inhibit处理
 	/*
 		1.查询 inhibit 规则
@@ -282,12 +287,12 @@ func toInhibit(alerts []Record) []Record{
 	*/
 
 	type AlertWithLables struct {
-		alert    Record
-		labelsMap   map[string]bool
+		alert     Record
+		labelsMap map[string]bool
 	}
 
 	type SourceAlert struct {
-		alert AlertWithLables
+		alert   AlertWithLables
 		inhibit models.Inhibits
 	}
 	var inhibits []models.Inhibits
@@ -309,7 +314,7 @@ func toInhibit(alerts []Record) []Record{
 
 	sourceAlerts := map[string][]SourceAlert{}
 	for _, alert := range alertWithLabels {
-		for _ , inhibit := range inhibits {
+		for _, inhibit := range inhibits {
 
 			// 源匹配
 			if _, ok := alert.labelsMap[inhibit.SourceExpression]; ok {
@@ -317,7 +322,7 @@ func toInhibit(alerts []Record) []Record{
 					//sourceAlerts[inhibit.Targetxpression][0] = SourceAlert{alert: alert, inhibit:inhibit}
 					sourceAlerts[inhibit.Targetxpression] = []SourceAlert{}
 				}
-				sourceAlerts[inhibit.Targetxpression] = append(sourceAlerts[inhibit.Targetxpression] , SourceAlert{alert: alert, inhibit:inhibit} )
+				sourceAlerts[inhibit.Targetxpression] = append(sourceAlerts[inhibit.Targetxpression], SourceAlert{alert: alert, inhibit: inhibit})
 			}
 		}
 	}
@@ -327,7 +332,7 @@ func toInhibit(alerts []Record) []Record{
 	for _, alertWithLabel := range alertWithLabels {
 		for targetExpression, sourceAlertArr := range sourceAlerts {
 			for _, sourceAlert := range sourceAlertArr {
-				if _, ok := alertWithLabel.labelsMap[targetExpression]; ok {// to inhibit
+				if _, ok := alertWithLabel.labelsMap[targetExpression]; ok { // to inhibit
 					if _, ok2 := inhibitlogsMap[alertWithLabel.alert.Id]; !ok2 {
 						var il models.InhibitLog
 						il.Id = 0
@@ -360,5 +365,3 @@ func toInhibit(alerts []Record) []Record{
 
 	return alerts2Send
 }
-
-

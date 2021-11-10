@@ -15,8 +15,8 @@ import (
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/plugins/cors"
 
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/common"
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers"
+	"doraemon/cmd/alert-gateway/common"
+	"doraemon/cmd/alert-gateway/controllers"
 )
 
 var FilterUser = func(ctx *context.Context) {

@@ -5,7 +5,7 @@ import (
 	"github.com/astaxie/beego/context/param"
 )
 
-const baseControllers = "github.com/Qihoo360/doraemon/cmd/alert-gateway/controllers"
+const baseControllers = "doraemon/cmd/alert-gateway/controllers"
 
 func init() {
 

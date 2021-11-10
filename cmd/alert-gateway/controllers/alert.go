@@ -7,9 +7,9 @@ import (
 
 	"github.com/astaxie/beego"
 
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/common"
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/logs"
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/models"
+	"doraemon/cmd/alert-gateway/common"
+	"doraemon/cmd/alert-gateway/logs"
+	"doraemon/cmd/alert-gateway/models"
 )
 
 type AlertController struct {

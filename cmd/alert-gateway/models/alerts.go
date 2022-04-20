@@ -10,8 +10,8 @@ import (
 	"github.com/astaxie/beego/orm"
 	"github.com/pkg/errors"
 
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/common"
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/logs"
+	"doraemon/cmd/alert-gateway/common"
+	"doraemon/cmd/alert-gateway/logs"
 )
 
 type Alerts struct {

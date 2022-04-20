@@ -2,10 +2,11 @@ package models
 
 import (
 	"fmt"
+
 	"github.com/astaxie/beego/orm"
 	"github.com/pkg/errors"
 
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/logs"
+	"doraemon/cmd/alert-gateway/logs"
 )
 
 type Rules struct {
@@ -16,16 +17,16 @@ type Rules struct {
 	For         string `orm:"column(for);size(1023)" json:"for"`
 	Summary     string `orm:"column(summary);size(1023)" json:"summary"`
 	Description string `orm:"column(description);size(1023)" json:"description"`
-	PromId      	int64  `orm:"column(prom_id);" json:"prom_id"`
-	PlanId      	int64  `orm:"column(plan_id);" json:"plan_id"`
+	PromId      int64  `orm:"column(prom_id);" json:"prom_id"`
+	PlanId      int64  `orm:"column(plan_id);" json:"plan_id"`
 	//Prom        	*Proms `orm:"rel(fk)" json:"prom_id"`
 	//Plan        	*Plans `orm:"rel(fk)" json:"plan_id"`
 	//Labels      []*Labels `orm:"rel(m2m);rel_through(alert-gateway/models.RuleLabels)" json:"omitempty"`
 }
 
 type ShowRules struct {
-	Rules []Rules	 `json:"rows"`
-	Total  int64     `json:"total"`
+	Rules []Rules `json:"rows"`
+	Total int64   `json:"total"`
 }
 
 func (*Rules) TableName() string {
@@ -102,7 +103,7 @@ func (*Rules) Get(prom string, id string) []Rules {
 	cond := orm.NewCondition()
 	if prom != "" {
 		qs = qs.SetCond(cond.And("prom_id__eq", prom))
-	} else if id != ""{
+	} else if id != "" {
 		qs = qs.SetCond(cond.And("id__eq", id))
 	}
 
@@ -110,14 +111,13 @@ func (*Rules) Get(prom string, id string) []Rules {
 	return rules
 }
 
-
-func (*Rules) GetRules(pageNo int64, pageSize int64) ShowRules{
+func (*Rules) GetRules(pageNo int64, pageSize int64) ShowRules {
 	var showRules ShowRules
 	qs := Ormer().QueryTable(new(Rules))
 
 	// 处理完查询条件之后
 	showRules.Total, _ = qs.Count()
-	qs.Limit(pageSize).Offset((pageNo-1)*pageSize).All(&showRules.Rules)
+	qs.Limit(pageSize).Offset((pageNo - 1) * pageSize).All(&showRules.Rules)
 
 	return showRules
 }

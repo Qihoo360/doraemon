@@ -7,9 +7,9 @@ import (
 
 	"github.com/astaxie/beego"
 
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/common"
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/logs"
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/models"
+	"doraemon/cmd/alert-gateway/common"
+	"doraemon/cmd/alert-gateway/logs"
+	"doraemon/cmd/alert-gateway/models"
 )
 
 type RuleController struct {
@@ -25,11 +25,11 @@ func (c *RuleController) URLMapping() {
 }
 
 type Rule struct {
-	Id    int64  `json:"id"`
-	Expr  string `json:"expr"`
-	Op    string `json:"op"`
-	Value string `json:"value"`
-	For   string `json:"for"`
+	Id          int64  `json:"id"`
+	Expr        string `json:"expr"`
+	Op          string `json:"op"`
+	Value       string `json:"value"`
+	For         string `json:"for"`
 	Summary     string `json:"summary"`
 	Description string `json:"description"`
 	PromId      int64  `json:"prom_id"`
@@ -122,7 +122,6 @@ func (c *RuleController) AddRule() {
 		ans.Msg = "Unmarshal error"
 	} else {
 		ruleModel.Id = 0 //reset the "Id" to 0,which is very important:after a record is inserted,the value of "Id" will not be 0,but the auto primary key of the record
-
 
 		err = ruleModel.InsertRule()
 		if err != nil {

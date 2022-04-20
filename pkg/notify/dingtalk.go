@@ -3,17 +3,18 @@ package notify
 import (
 	"crypto/hmac"
 	"crypto/sha256"
+	"doraemon/cmd/alert-gateway/common"
+	"doraemon/cmd/alert-gateway/logs"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/common"
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/logs"
-	"github.com/astaxie/beego"
 	uri "net/url"
 	"runtime"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/astaxie/beego"
 )
 
 // DingTalkMessage the dingTalk request body model

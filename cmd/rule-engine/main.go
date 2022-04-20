@@ -13,7 +13,7 @@ import (
 	promlogflag "github.com/prometheus/common/promlog/flag"
 	kingpin "gopkg.in/alecthomas/kingpin.v2"
 
-	"github.com/Qihoo360/doraemon/cmd/rule-engine/modules"
+	"doraemon/cmd/rule-engine/modules"
 )
 
 var (

@@ -1,14 +1,15 @@
 package main
 
 import (
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/initial"
-	"github.com/Qihoo360/doraemon/pkg/auth/ldaputil"
+	"doraemon/cmd/alert-gateway/initial"
+	"doraemon/pkg/auth/ldaputil"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/go-ldap/ldap"
 
-	_ "github.com/Qihoo360/doraemon/cmd/alert-gateway/logs"
-	_ "github.com/Qihoo360/doraemon/cmd/alert-gateway/routers"
+	_ "doraemon/cmd/alert-gateway/logs"
+	_ "doraemon/cmd/alert-gateway/routers"
 )
 
 func parseLdapScope(scope string) int {

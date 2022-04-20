@@ -1,15 +1,16 @@
 package initial
 
 import (
+	"doraemon/cmd/alert-gateway/common"
+	"doraemon/cmd/alert-gateway/logs"
+	"doraemon/pkg/notify"
 	"encoding/json"
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/common"
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/logs"
-	"github.com/Qihoo360/doraemon/pkg/notify"
-	"github.com/astaxie/beego"
 	"runtime"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/astaxie/beego"
 )
 
 /*

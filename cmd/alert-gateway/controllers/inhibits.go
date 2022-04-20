@@ -1,12 +1,13 @@
 package controllers
 
 import (
+	"doraemon/cmd/alert-gateway/common"
+	"doraemon/cmd/alert-gateway/logs"
+	"doraemon/cmd/alert-gateway/models"
 	"encoding/json"
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/common"
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/logs"
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/models"
-	"github.com/astaxie/beego"
 	"strconv"
+
+	"github.com/astaxie/beego"
 )
 
 type InhibitsController struct {
@@ -22,7 +23,7 @@ func (c *InhibitsController) URLMapping() {
 }
 
 // @router / [get]
-func (c *InhibitsController) GetInhibits(){
+func (c *InhibitsController) GetInhibits() {
 	pageNo, _ := strconv.ParseInt(c.Input().Get("page"), 10, 64)
 	pageSize, _ := strconv.ParseInt(c.Input().Get("pagesize"), 10, 64)
 	if pageNo == 0 && pageSize == 0 {
@@ -52,7 +53,7 @@ func (c *InhibitsController) GetInhibit() {
 		if err != nil {
 			ans.Code = 1
 			ans.Msg = "数据库删除记录错误：" + err.Error()
-		}else{
+		} else {
 			ans.Data = inhibit
 		}
 	}
@@ -61,8 +62,8 @@ func (c *InhibitsController) GetInhibit() {
 }
 
 // @router / [post]
-func (c *InhibitsController) AddInhibit(){
-	inhibit :=models.Inhibits{}
+func (c *InhibitsController) AddInhibit() {
+	inhibit := models.Inhibits{}
 	var ans common.Res
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &inhibit)
 	if err != nil {
@@ -77,8 +78,8 @@ func (c *InhibitsController) AddInhibit(){
 		if inhibit.TargetReversePolishNotation == "" {
 			inhibit.TargetReversePolishNotation = inhibit.Targetxpression
 		}
-		err=inhibit.InsertInhibit()
-		if err!=nil{
+		err = inhibit.InsertInhibit()
+		if err != nil {
 			ans.Code = 1
 			ans.Msg = "插入数据库错误：" + err.Error()
 		}
@@ -105,7 +106,6 @@ func (c *InhibitsController) DeleteInhibit() {
 	c.Data["json"] = &ans
 	c.ServeJSON()
 }
-
 
 // @router /logs [get]
 func (c *InhibitsController) GetInhibitLogs() {

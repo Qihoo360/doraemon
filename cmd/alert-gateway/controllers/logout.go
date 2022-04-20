@@ -1,7 +1,8 @@
 package controllers
 
 import (
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/common"
+	"doraemon/cmd/alert-gateway/common"
+
 	"github.com/astaxie/beego"
 )
 

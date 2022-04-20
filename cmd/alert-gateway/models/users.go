@@ -6,7 +6,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/Qihoo360/doraemon/cmd/alert-gateway/common"
+	"doraemon/cmd/alert-gateway/common"
 )
 
 type Users struct {
